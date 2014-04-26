@@ -7,6 +7,7 @@ using LudumDare29.Screens;
 using FlatRedBall.Graphics;
 using FlatRedBall.Math;
 using LudumDare29.Entities;
+using LudumDare29.Factories;
 using FlatRedBall;
 using FlatRedBall.Screens;
 using System;
@@ -57,6 +58,18 @@ namespace LudumDare29.Entities
 		
 		private FlatRedBall.Sprite SpriteInstance;
 		private FlatRedBall.Sprite HandSprite;
+		private FlatRedBall.Math.Geometry.AxisAlignedRectangle mGunRectangle;
+		public FlatRedBall.Math.Geometry.AxisAlignedRectangle GunRectangle
+		{
+			get
+			{
+				return mGunRectangle;
+			}
+			private set
+			{
+				mGunRectangle = value;
+			}
+		}
 		public event EventHandler BeforeGroundMovementSet;
 		public event EventHandler AfterGroundMovementSet;
 		public override LudumDare29.DataTypes.MovementValues GroundMovement
@@ -150,6 +163,8 @@ namespace LudumDare29.Entities
 			SpriteInstance.Name = "SpriteInstance";
 			HandSprite = new FlatRedBall.Sprite();
 			HandSprite.Name = "HandSprite";
+			mGunRectangle = new FlatRedBall.Math.Geometry.AxisAlignedRectangle();
+			mGunRectangle.Name = "mGunRectangle";
 			
 			base.InitializeEntity(addToManagers);
 
@@ -162,12 +177,14 @@ namespace LudumDare29.Entities
 			base.ReAddToManagers(layerToAddTo);
 			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			SpriteManager.AddToLayer(HandSprite, LayerProvidedByContainer);
+			ShapeManager.AddToLayer(mGunRectangle, LayerProvidedByContainer);
 		}
 		public override void AddToManagers (Layer layerToAddTo)
 		{
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			SpriteManager.AddToLayer(HandSprite, LayerProvidedByContainer);
+			ShapeManager.AddToLayer(mGunRectangle, LayerProvidedByContainer);
 			base.AddToManagers(layerToAddTo);
 			CustomInitialize();
 		}
@@ -195,6 +212,10 @@ namespace LudumDare29.Entities
 			{
 				SpriteManager.RemoveSprite(HandSprite);
 			}
+			if (GunRectangle != null)
+			{
+				ShapeManager.Remove(GunRectangle);
+			}
 
 
 			CustomDestroy();
@@ -218,19 +239,27 @@ namespace LudumDare29.Entities
 				SpriteInstance.CopyAbsoluteToRelative();
 				SpriteInstance.AttachTo(this, false);
 			}
-			SpriteInstance.TextureScale = 1f;
 			SpriteInstance.AnimationChains = AnimationChainListFile;
-			SpriteInstance.CurrentChainName = "StandRight";
+			SpriteInstance.TextureScale = 1f;
 			SpriteInstance.PixelSize = 1.5f;
+			SpriteInstance.CurrentChainName = "StandRight";
 			if (HandSprite.Parent == null)
 			{
 				HandSprite.CopyAbsoluteToRelative();
 				HandSprite.AttachTo(this, false);
 			}
-			HandSprite.TextureScale = 1f;
 			HandSprite.AnimationChains = AnimationChainListFile;
-			HandSprite.CurrentChainName = "Hand";
+			HandSprite.TextureScale = 1f;
 			HandSprite.PixelSize = 1.5f;
+			HandSprite.CurrentChainName = "Hand";
+			if (mGunRectangle.Parent == null)
+			{
+				mGunRectangle.CopyAbsoluteToRelative();
+				mGunRectangle.AttachTo(this, false);
+			}
+			GunRectangle.Width = 5f;
+			GunRectangle.Height = 5f;
+			GunRectangle.Visible = false;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public override void AddToManagersBottomUp (Layer layerToAddTo)
@@ -249,6 +278,10 @@ namespace LudumDare29.Entities
 			{
 				SpriteManager.RemoveSpriteOneWay(HandSprite);
 			}
+			if (GunRectangle != null)
+			{
+				ShapeManager.RemoveOneWay(GunRectangle);
+			}
 		}
 		public override void AssignCustomVariables (bool callOnContainedElements)
 		{
@@ -258,14 +291,17 @@ namespace LudumDare29.Entities
 			}
 			mCollision.Height = 48f;
 			mCollision.Width = 28f;
-			SpriteInstance.TextureScale = 1f;
 			SpriteInstance.AnimationChains = AnimationChainListFile;
-			SpriteInstance.CurrentChainName = "StandRight";
+			SpriteInstance.TextureScale = 1f;
 			SpriteInstance.PixelSize = 1.5f;
-			HandSprite.TextureScale = 1f;
+			SpriteInstance.CurrentChainName = "StandRight";
 			HandSprite.AnimationChains = AnimationChainListFile;
-			HandSprite.CurrentChainName = "Hand";
+			HandSprite.TextureScale = 1f;
 			HandSprite.PixelSize = 1.5f;
+			HandSprite.CurrentChainName = "Hand";
+			mGunRectangle.Width = 5f;
+			mGunRectangle.Height = 5f;
+			mGunRectangle.Visible = false;
 			GroundMovement = Player.MovementValues["ImmediateVelocityOnGround"];
 			AirMovement = Player.MovementValues["ImmediateVelocityBeforeDoubleJump"];
 			AfterDoubleJump = Player.MovementValues["ImmediateVelocityInAir"];
@@ -391,6 +427,7 @@ namespace LudumDare29.Entities
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(Collision);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(SpriteInstance);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(HandSprite);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(GunRectangle);
 		}
 		public override void MoveToLayer (Layer layerToMoveTo)
 		{

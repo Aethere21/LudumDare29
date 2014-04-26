@@ -7,7 +7,7 @@ namespace LudumDare29
 {
     public class GlobalData
     {
-        public static PlayerData mPlayerData = new PlayerData(); 
+        private static PlayerData mPlayerData = new PlayerData(); 
 
         public static PlayerData PlayerData
         {

@@ -14,7 +14,7 @@ namespace LudumDare29
 	{
 			internal static void SetupCamera (Camera cameraToSetUp, GraphicsDeviceManager graphicsDeviceManager)
 			{
-				cameraToSetUp.UsePixelCoordinates(false, 600, 400);
+				cameraToSetUp.UsePixelCoordinates(false, 550, 350);
 			}
 			internal static void ResetCamera (Camera cameraToReset)
 			{

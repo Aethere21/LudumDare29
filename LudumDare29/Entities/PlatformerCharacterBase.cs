@@ -123,11 +123,11 @@ namespace LudumDare29.Entities
                 }
                 else
                 {
-                    if (InputManager.Keyboard.KeyDown(Keys.Left))
+                    if (InputManager.Keyboard.KeyDown(Keys.A))
                     {
                         return -1;
                     }
-                    else if (InputManager.Keyboard.KeyDown(Keys.Right))
+                    else if (InputManager.Keyboard.KeyDown(Keys.D))
                     {
                         return 1;
                     }

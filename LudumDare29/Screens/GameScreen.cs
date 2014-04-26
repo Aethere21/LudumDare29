@@ -24,6 +24,7 @@ using Vector3 = Microsoft.Xna.Framework.Vector3;
 using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
 using FlatRedBall.TileCollisions;
 using FlatRedBall.TileGraphics;
+using Microsoft.Xna.Framework;
 #endif
 #endregion
 
@@ -34,9 +35,13 @@ namespace LudumDare29.Screens
 
 		void CustomInitialize()
 		{
-            TileCollisionShapes.GridSize = 32;
             TileCollisionShapes.Visible = true;
-            SetLevelByName("StartLevel");
+            GlobalData.PlayerData.currentLevel = "StartLevel";
+            GlobalData.PlayerData.gunDamage = 1;
+            GlobalData.PlayerData.health = 100;
+            GlobalData.PlayerData.playerDefense = 0;
+            GlobalData.PlayerData.score = 0;
+            SetLevelByName(GlobalData.PlayerData.currentLevel);
 		}
 
 		void CustomActivity(bool firstTimeCalled)
@@ -44,6 +49,7 @@ namespace LudumDare29.Screens
             CollisionActivity();
             CameraActivity();
 
+            PlayerInstance.DetermineMovementValues();
 		}
 
 		void CustomDestroy()
@@ -81,9 +87,9 @@ namespace LudumDare29.Screens
                         float left;
                         float bottom;
                         layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
-                        float centerX = left + tileSize / 2.0f;
-                        float centerY = bottom + tileSize / 2.0f;
-                        TileCollisionShapes.AddCollisionAtWorld(centerX, centerY);
+                        float centerX = left + tileSize;
+                        float centerY = bottom + tileSize;
+                        AddShapes(TileCollisionShapes, tileSize, tileSize, new Vector3(centerX, centerY, 0), true, Color.Green);
                     }
                 }
                 if (layer.NamedTileOrderedIndexes.ContainsKey("StartPos"))
@@ -97,32 +103,40 @@ namespace LudumDare29.Screens
                         float centerX = left + tileSize / 2.0f;
                         float centerY = bottom + tileSize / 2.0f;
                         PlayerInstance.Position = new Vector3(centerX, centerY, 10);
+                        layer.Visible = false;
                     }
                 }
             }
         }
 
-        private void RemoveShapes(TileShapeCollection shapes)
+        private void RemoveShapes(ShapeCollection shapes)
         {
-            for (int i = shapes.Rectangles.Count - 1; i >= 0; i--)
+            for (int i = shapes.AxisAlignedRectangles.Count - 1; i >= 0; i--)
             {
                 //shapes.Rectangles[i].RemoveSelfFromListsBelongingTo();
-                ShapeManager.Remove(shapes.Rectangles[i]);
+                ShapeManager.Remove(shapes.AxisAlignedRectangles[i]);
             }
+        }
+
+        private void AddShapes(ShapeCollection shapeCol, float ScaleX, float ScaleY, Vector3 position, bool Visible, Color color)
+        {
+            AxisAlignedRectangle rect = new AxisAlignedRectangle(ScaleX, ScaleY);
+            rect.Position = position;
+            rect.Visible = Visible;
+            rect.Color = color;
+            shapeCol.AxisAlignedRectangles.Add(rect);
         }
 
         private void CollisionActivity()
         {
-            PlayerInstance.CollideAgainst(TileCollision, false);
-        }
-
-        public bool TileCollision()
-        {
-            if (TileCollisionShapes.CollideAgainstSolid(PlayerInstance.Collision))
+            PlayerInstance.CollideAgainst(TileCollisionShapes, false);
+            for (int i = BulletList.Count - 1; i >= 0; i--)
             {
-                return true;
+                if(BulletList[i].Collision.CollideAgainst(TileCollisionShapes))
+                {
+                    BulletList[i].Destroy();
+                }
             }
-            return false;
         }
 
         private void CameraActivity()

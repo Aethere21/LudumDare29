@@ -163,5 +163,21 @@
       <RelativeY>0</RelativeY>
     </Frame>
   </AnimationChain>
+  <AnimationChain>
+    <Name>HandLeft</Name>
+    <ColorKey>0</ColorKey>
+    <Frame>
+      <FlipHorizontal>true</FlipHorizontal>
+      <FlipVertical>false</FlipVertical>
+      <TextureName>PlayerTexture.png</TextureName>
+      <FrameLength>0</FrameLength>
+      <LeftCoordinate>0.0078125</LeftCoordinate>
+      <RightCoordinate>0.109375</RightCoordinate>
+      <TopCoordinate>0.208333328</TopCoordinate>
+      <BottomCoordinate>0.239583328</BottomCoordinate>
+      <RelativeX>0</RelativeX>
+      <RelativeY>0</RelativeY>
+    </Frame>
+  </AnimationChain>
   <FileName>C:/Users/Jakub/Documents/FlatRedBallProjects/LudumDare29/LudumDare29/LudumDare29Content/Entities/Player/AnimationChainListFile.achx</FileName>
 </AnimationChainArraySave>

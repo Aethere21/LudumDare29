@@ -20,11 +20,14 @@ using Microsoft.Xna.Framework.Media;
 
 // Generated Usings
 using LudumDare29.Entities;
+using LudumDare29.Factories;
 using FlatRedBall;
 using FlatRedBall.Screens;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FlatRedBall.Math.Geometry;
+using FlatRedBall.Math;
 using FlatRedBall.TileGraphics;
 
 namespace LudumDare29.Screens
@@ -38,8 +41,9 @@ namespace LudumDare29.Screens
 		protected static FlatRedBall.TileGraphics.LayeredTileMap StartLevel;
 		
 		private FlatRedBall.TileGraphics.LayeredTileMap TiledMap;
-		private FlatRedBall.TileCollisions.TileShapeCollection TileCollisionShapes;
 		private LudumDare29.Entities.Player PlayerInstance;
+		private FlatRedBall.Math.Geometry.ShapeCollection TileCollisionShapes;
+		private PositionedObjectList<LudumDare29.Entities.Bullet> BulletList;
 
 		public GameScreen()
 			: base("GameScreen")
@@ -52,10 +56,12 @@ namespace LudumDare29.Screens
 			LoadStaticContent(ContentManagerName);
 			TiledMap = new FlatRedBall.TileGraphics.LayeredTileMap();
 			TiledMap.Name = "TiledMap";
-			TileCollisionShapes = new FlatRedBall.TileCollisions.TileShapeCollection();
-			TileCollisionShapes.Name = "TileCollisionShapes";
 			PlayerInstance = new LudumDare29.Entities.Player(ContentManagerName, false);
 			PlayerInstance.Name = "PlayerInstance";
+			TileCollisionShapes = new FlatRedBall.Math.Geometry.ShapeCollection();
+			TileCollisionShapes.Name = "TileCollisionShapes";
+			BulletList = new PositionedObjectList<LudumDare29.Entities.Bullet>();
+			BulletList.Name = "BulletList";
 			
 			
 			PostInitialize();
@@ -71,7 +77,9 @@ namespace LudumDare29.Screens
 		public override void AddToManagers ()
 		{
 			StartLevel.AddToManagers();
+			BulletFactory.Initialize(BulletList, ContentManagerName);
 			PlayerInstance.AddToManagers(mLayer);
+			TileCollisionShapes.AddToManagers();
 			base.AddToManagers();
 			AddToManagersBottomUp();
 			CustomInitialize();
@@ -85,6 +93,14 @@ namespace LudumDare29.Screens
 			{
 				
 				PlayerInstance.Activity();
+				for (int i = BulletList.Count - 1; i > -1; i--)
+				{
+					if (i < BulletList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						BulletList[i].Activity();
+					}
+				}
 			}
 			else
 			{
@@ -104,18 +120,25 @@ namespace LudumDare29.Screens
 		public override void Destroy()
 		{
 			// Generated Destroy
+			BulletFactory.Destroy();
 			StartLevel.Destroy();
 			StartLevel = null;
 			
-			if (TileCollisionShapes != null)
-			{
-				TileCollisionShapes.Visible = false;
-			}
+			BulletList.MakeOneWay();
 			if (PlayerInstance != null)
 			{
 				PlayerInstance.Destroy();
 				PlayerInstance.Detach();
 			}
+			if (TileCollisionShapes != null)
+			{
+				TileCollisionShapes.RemoveFromManagers(ContentManagerName != "Global");
+			}
+			for (int i = BulletList.Count - 1; i > -1; i--)
+			{
+				BulletList[i].Destroy();
+			}
+			BulletList.MakeTwoWay();
 
 			base.Destroy();
 
@@ -137,11 +160,15 @@ namespace LudumDare29.Screens
 		}
 		public virtual void RemoveFromManagers ()
 		{
+			PlayerInstance.RemoveFromManagers();
 			if (TileCollisionShapes != null)
 			{
-				TileCollisionShapes.Visible = false;
+				TileCollisionShapes.RemoveFromManagers(false);
 			}
-			PlayerInstance.RemoveFromManagers();
+			for (int i = BulletList.Count - 1; i > -1; i--)
+			{
+				BulletList[i].Destroy();
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
@@ -153,6 +180,10 @@ namespace LudumDare29.Screens
 		public virtual void ConvertToManuallyUpdated ()
 		{
 			PlayerInstance.ConvertToManuallyUpdated();
+			for (int i = 0; i < BulletList.Count; i++)
+			{
+				BulletList[i].ConvertToManuallyUpdated();
+			}
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{

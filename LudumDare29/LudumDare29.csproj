@@ -115,6 +115,10 @@
   <ItemGroup>
     <Compile Include="DataTypes\MovementValues.Generated.cs" />
     <Compile Include="DataTypes\TileMapInfo.Generated.cs" />
+    <Compile Include="Entities\Bullet.cs" />
+    <Compile Include="Entities\Bullet.Generated.cs">
+      <DependentUpon>Bullet.cs</DependentUpon>
+    </Compile>
     <Compile Include="Entities\PlatformerCharacterBase.cs" />
     <Compile Include="Entities\PlatformerCharacterBase.Event.cs">
       <DependentUpon>PlatformerCharacterBase.cs</DependentUpon>
@@ -129,6 +133,7 @@
     <Compile Include="Entities\Player.Generated.cs">
       <DependentUpon>Player.cs</DependentUpon>
     </Compile>
+    <Compile Include="Factories\BulletFactory.Generated.cs" />
     <Compile Include="GlobalContent.Generated.cs" />
     <Compile Include="GlobalData.cs" />
     <Compile Include="Performance\IEntityFactory.Generated.cs" />

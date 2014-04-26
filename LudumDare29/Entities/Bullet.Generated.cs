@@ -6,15 +6,16 @@ using GuiManager = FlatRedBall.Gui.GuiManager;
 using LudumDare29.Screens;
 using FlatRedBall.Graphics;
 using FlatRedBall.Math;
+using LudumDare29.Performance;
 using LudumDare29.Entities;
+using LudumDare29.Factories;
 using FlatRedBall;
 using FlatRedBall.Screens;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LudumDare29.DataTypes;
-using FlatRedBall.IO.Csv;
 using FlatRedBall.Math.Geometry;
+using Microsoft.Xna.Framework.Graphics;
 
 #if XNA4 || WINDOWS_8
 using Color = Microsoft.Xna.Framework.Color;
@@ -36,7 +37,7 @@ using Model = Microsoft.Xna.Framework.Graphics.Model;
 
 namespace LudumDare29.Entities
 {
-	public partial class PlatformerCharacterBase : PositionedObject, IDestroyable
+	public partial class Bullet : PositionedObject, IDestroyable, IPoolable
 	{
         // This is made global so that static lazy-loaded content can access it.
         public static string ContentManagerName
@@ -52,9 +53,9 @@ namespace LudumDare29.Entities
 		static object mLockObject = new object();
 		static List<string> mRegisteredUnloads = new List<string>();
 		static List<string> LoadedContentManagers = new List<string>();
-		public static Dictionary<string, MovementValues> MovementValues;
+		protected static Microsoft.Xna.Framework.Graphics.Texture2D BulletTexture;
 		
-		protected FlatRedBall.Math.Geometry.AxisAlignedRectangle mCollision;
+		private FlatRedBall.Math.Geometry.AxisAlignedRectangle mCollision;
 		public FlatRedBall.Math.Geometry.AxisAlignedRectangle Collision
 		{
 			get
@@ -66,87 +67,24 @@ namespace LudumDare29.Entities
 				mCollision = value;
 			}
 		}
-		public event EventHandler BeforeGroundMovementSet;
-		public event EventHandler AfterGroundMovementSet;
-		LudumDare29.DataTypes.MovementValues mGroundMovement;
-		public virtual LudumDare29.DataTypes.MovementValues GroundMovement
-		{
-			set
-			{
-				if (BeforeGroundMovementSet != null)
-				{
-					BeforeGroundMovementSet(this, null);
-				}
-				mGroundMovement = value;
-				if (AfterGroundMovementSet != null)
-				{
-					AfterGroundMovementSet(this, null);
-				}
-			}
-			get
-			{
-				return mGroundMovement;
-			}
-		}
-		public event EventHandler BeforeAirMovementSet;
-		public event EventHandler AfterAirMovementSet;
-		LudumDare29.DataTypes.MovementValues mAirMovement;
-		public virtual LudumDare29.DataTypes.MovementValues AirMovement
-		{
-			set
-			{
-				if (BeforeAirMovementSet != null)
-				{
-					BeforeAirMovementSet(this, null);
-				}
-				mAirMovement = value;
-				if (AfterAirMovementSet != null)
-				{
-					AfterAirMovementSet(this, null);
-				}
-			}
-			get
-			{
-				return mAirMovement;
-			}
-		}
-		public event EventHandler BeforeAfterDoubleJumpSet;
-		public event EventHandler AfterAfterDoubleJumpSet;
-		LudumDare29.DataTypes.MovementValues mAfterDoubleJump;
-		public virtual LudumDare29.DataTypes.MovementValues AfterDoubleJump
-		{
-			set
-			{
-				if (BeforeAfterDoubleJumpSet != null)
-				{
-					BeforeAfterDoubleJumpSet(this, null);
-				}
-				mAfterDoubleJump = value;
-				if (AfterAfterDoubleJumpSet != null)
-				{
-					AfterAfterDoubleJumpSet(this, null);
-				}
-			}
-			get
-			{
-				return mAfterDoubleJump;
-			}
-		}
+		private FlatRedBall.Sprite SpriteInstance;
+		public int Index { get; set; }
+		public bool Used { get; set; }
 		protected Layer LayerProvidedByContainer = null;
 
-        public PlatformerCharacterBase()
+        public Bullet()
             : this(FlatRedBall.Screens.ScreenManager.CurrentScreen.ContentManagerName, true)
         {
 
         }
 
-        public PlatformerCharacterBase(string contentManagerName) :
+        public Bullet(string contentManagerName) :
             this(contentManagerName, true)
         {
         }
 
 
-        public PlatformerCharacterBase(string contentManagerName, bool addToManagers) :
+        public Bullet(string contentManagerName, bool addToManagers) :
 			base()
 		{
 			// Don't delete this:
@@ -161,6 +99,8 @@ namespace LudumDare29.Entities
 			LoadStaticContent(ContentManagerName);
 			mCollision = new FlatRedBall.Math.Geometry.AxisAlignedRectangle();
 			mCollision.Name = "mCollision";
+			SpriteInstance = new FlatRedBall.Sprite();
+			SpriteInstance.Name = "SpriteInstance";
 			
 			PostInitialize();
 			if (addToManagers)
@@ -177,12 +117,14 @@ namespace LudumDare29.Entities
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddPositionedObject(this);
 			ShapeManager.AddToLayer(mCollision, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 		}
 		public virtual void AddToManagers (Layer layerToAddTo)
 		{
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddPositionedObject(this);
 			ShapeManager.AddToLayer(mCollision, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			AddToManagersBottomUp(layerToAddTo);
 			CustomInitialize();
 		}
@@ -200,10 +142,18 @@ namespace LudumDare29.Entities
 		{
 			// Generated Destroy
 			SpriteManager.RemovePositionedObject(this);
+			if (Used)
+			{
+				BulletFactory.MakeUnused(this, false);
+			}
 			
 			if (Collision != null)
 			{
-				ShapeManager.Remove(Collision);
+				ShapeManager.RemoveOneWay(Collision);
+			}
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(SpriteInstance);
 			}
 
 
@@ -215,18 +165,29 @@ namespace LudumDare29.Entities
 		{
 			bool oldShapeManagerSuppressAdd = FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = true;
-			this.AfterGroundMovementSet += OnAfterGroundMovementSet;
-			this.AfterAirMovementSet += OnAfterAirMovementSet;
-			this.AfterAfterDoubleJumpSet += OnAfterAfterDoubleJumpSet;
 			if (mCollision.Parent == null)
 			{
 				mCollision.CopyAbsoluteToRelative();
 				mCollision.AttachTo(this, false);
 			}
-			Collision.Color = Color.Red;
-			Collision.Height = 48f;
+			Collision.Width = 2.5f;
+			Collision.Height = 6f;
 			Collision.Visible = false;
-			Collision.Width = 32f;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.CopyAbsoluteToRelative();
+				SpriteInstance.AttachTo(this, false);
+			}
+			SpriteInstance.TextureScale = 0.5f;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.Z = 8f;
+			}
+			else
+			{
+				SpriteInstance.RelativeZ = 8f;
+			}
+			SpriteInstance.Texture = BulletTexture;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp (Layer layerToAddTo)
@@ -240,21 +201,35 @@ namespace LudumDare29.Entities
 			{
 				ShapeManager.RemoveOneWay(Collision);
 			}
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(SpriteInstance);
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
 			if (callOnContainedElements)
 			{
 			}
-			mCollision.Color = Color.Red;
-			mCollision.Height = 48f;
+			mCollision.Width = 2.5f;
+			mCollision.Height = 6f;
 			mCollision.Visible = false;
-			mCollision.Width = 32f;
+			SpriteInstance.TextureScale = 0.5f;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.Z = 8f;
+			}
+			else
+			{
+				SpriteInstance.RelativeZ = 8f;
+			}
+			SpriteInstance.Texture = BulletTexture;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
 			this.ForceUpdateDependenciesDeep();
 			SpriteManager.ConvertToManuallyUpdated(this);
+			SpriteManager.ConvertToManuallyUpdated(SpriteInstance);
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{
@@ -281,22 +256,15 @@ namespace LudumDare29.Entities
 				{
 					if (!mRegisteredUnloads.Contains(ContentManagerName) && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 					{
-						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("PlatformerCharacterBaseStaticUnload", UnloadStaticContent);
+						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("BulletStaticUnload", UnloadStaticContent);
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
-				if (MovementValues == null)
+				if (!FlatRedBallServices.IsLoaded<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/bullet/bullettexture.png", ContentManagerName))
 				{
-					{
-						// We put the { and } to limit the scope of oldDelimiter
-						char oldDelimiter = CsvFileManager.Delimiter;
-						CsvFileManager.Delimiter = ',';
-						Dictionary<string, MovementValues> temporaryCsvObject = new Dictionary<string, MovementValues>();
-						CsvFileManager.CsvDeserializeDictionary<string, MovementValues>("content/entities/platformercharacterbase/movementvalues.csv", temporaryCsvObject);
-						CsvFileManager.Delimiter = oldDelimiter;
-						MovementValues = temporaryCsvObject;
-					}
+					registerUnload = true;
 				}
+				BulletTexture = FlatRedBallServices.Load<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/bullet/bullettexture.png", ContentManagerName);
 			}
 			if (registerUnload && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 			{
@@ -304,7 +272,7 @@ namespace LudumDare29.Entities
 				{
 					if (!mRegisteredUnloads.Contains(ContentManagerName) && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 					{
-						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("PlatformerCharacterBaseStaticUnload", UnloadStaticContent);
+						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("BulletStaticUnload", UnloadStaticContent);
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
@@ -320,9 +288,9 @@ namespace LudumDare29.Entities
 			}
 			if (LoadedContentManagers.Count == 0)
 			{
-				if (MovementValues != null)
+				if (BulletTexture != null)
 				{
-					MovementValues= null;
+					BulletTexture= null;
 				}
 			}
 		}
@@ -331,8 +299,8 @@ namespace LudumDare29.Entities
 		{
 			switch(memberName)
 			{
-				case  "MovementValues":
-					return MovementValues;
+				case  "BulletTexture":
+					return BulletTexture;
 			}
 			return null;
 		}
@@ -340,8 +308,8 @@ namespace LudumDare29.Entities
 		{
 			switch(memberName)
 			{
-				case  "MovementValues":
-					return MovementValues;
+				case  "BulletTexture":
+					return BulletTexture;
 			}
 			return null;
 		}
@@ -349,8 +317,8 @@ namespace LudumDare29.Entities
 		{
 			switch(memberName)
 			{
-				case  "MovementValues":
-					return MovementValues;
+				case  "BulletTexture":
+					return BulletTexture;
 			}
 			return null;
 		}
@@ -364,9 +332,15 @@ namespace LudumDare29.Entities
 		{
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(this);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(Collision);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(SpriteInstance);
 		}
 		public virtual void MoveToLayer (Layer layerToMoveTo)
 		{
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(SpriteInstance);
+			}
+			SpriteManager.AddToLayer(SpriteInstance, layerToMoveTo);
 			LayerProvidedByContainer = layerToMoveTo;
 		}
 

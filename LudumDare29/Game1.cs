@@ -45,8 +45,10 @@ namespace LudumDare29
 			CameraSetup.SetupCamera(SpriteManager.Camera, graphics);
 			GlobalContent.Initialize();
 
+            FlatRedBallServices.GraphicsOptions.BackgroundColor = Color.CornflowerBlue;
+
             FlatRedBallServices.GraphicsOptions.TextureFilter = TextureFilter.Point;
-            FlatRedBallServices.GraphicsOptions.UseMultiSampling = true;
+            //FlatRedBallServices.GraphicsOptions.UseMultiSampling = true;
             //FlatRedBallServices.GraphicsOptions.TextureLoadingColorKey = Color.Black;
 
 			FlatRedBall.Screens.ScreenManager.Start(typeof(LudumDare29.Screens.GameScreen));
