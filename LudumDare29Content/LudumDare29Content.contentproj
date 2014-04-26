@@ -42,6 +42,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Entities\PlatformerCharacterBase\MovementValues.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MovementValues</Name>
+    </None>
+    <None Include="Entities\Player\AnimationChainListFile.achx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>AnimationChainListFile</Name>
+    </None>
+    <None Include="Entities\Player\PlayerTexture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>PlayerTexture</Name>
+    </None>
+    <None Include="Screens\GameScreen\MainTiles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MainTiles</Name>
+    </None>
     <None Include="Screens\GameScreen\StartLevel.tilb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>StartLevel</Name>

@@ -12,6 +12,9 @@ using FlatRedBall.Screens;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FlatRedBall.Math.Geometry;
+using FlatRedBall.Graphics.Animation;
+using Microsoft.Xna.Framework.Graphics;
 
 #if XNA4 || WINDOWS_8
 using Color = Microsoft.Xna.Framework.Color;
@@ -33,13 +36,13 @@ using Model = Microsoft.Xna.Framework.Graphics.Model;
 
 namespace LudumDare29.Entities
 {
-	public partial class Player : PositionedObject, IDestroyable
+	public partial class Player : LudumDare29.Entities.PlatformerCharacterBase, IDestroyable
 	{
         // This is made global so that static lazy-loaded content can access it.
-        public static string ContentManagerName
+        public static new string ContentManagerName
         {
-            get;
-            set;
+            get{ return Entities.PlatformerCharacterBase.ContentManagerName;}
+            set{ Entities.PlatformerCharacterBase.ContentManagerName = value;}
         }
 
 		// Generated Fields
@@ -49,8 +52,74 @@ namespace LudumDare29.Entities
 		static object mLockObject = new object();
 		static List<string> mRegisteredUnloads = new List<string>();
 		static List<string> LoadedContentManagers = new List<string>();
+		protected static FlatRedBall.Graphics.Animation.AnimationChainList AnimationChainListFile;
+		protected static Microsoft.Xna.Framework.Graphics.Texture2D PlayerTexture;
 		
-		protected Layer LayerProvidedByContainer = null;
+		private FlatRedBall.Sprite SpriteInstance;
+		private FlatRedBall.Sprite HandSprite;
+		public event EventHandler BeforeGroundMovementSet;
+		public event EventHandler AfterGroundMovementSet;
+		public override LudumDare29.DataTypes.MovementValues GroundMovement
+		{
+			set
+			{
+				if (BeforeGroundMovementSet != null)
+				{
+					BeforeGroundMovementSet(this, null);
+				}
+				base.GroundMovement = value;
+				if (AfterGroundMovementSet != null)
+				{
+					AfterGroundMovementSet(this, null);
+				}
+			}
+			get
+			{
+				return base.GroundMovement;
+			}
+		}
+		public event EventHandler BeforeAirMovementSet;
+		public event EventHandler AfterAirMovementSet;
+		public override LudumDare29.DataTypes.MovementValues AirMovement
+		{
+			set
+			{
+				if (BeforeAirMovementSet != null)
+				{
+					BeforeAirMovementSet(this, null);
+				}
+				base.AirMovement = value;
+				if (AfterAirMovementSet != null)
+				{
+					AfterAirMovementSet(this, null);
+				}
+			}
+			get
+			{
+				return base.AirMovement;
+			}
+		}
+		public event EventHandler BeforeAfterDoubleJumpSet;
+		public event EventHandler AfterAfterDoubleJumpSet;
+		public override LudumDare29.DataTypes.MovementValues AfterDoubleJump
+		{
+			set
+			{
+				if (BeforeAfterDoubleJumpSet != null)
+				{
+					BeforeAfterDoubleJumpSet(this, null);
+				}
+				base.AfterDoubleJump = value;
+				if (AfterAfterDoubleJumpSet != null)
+				{
+					AfterAfterDoubleJumpSet(this, null);
+				}
+			}
+			get
+			{
+				return base.AfterDoubleJump;
+			}
+		}
 
         public Player()
             : this(FlatRedBall.Screens.ScreenManager.CurrentScreen.ContentManagerName, true)
@@ -65,94 +134,158 @@ namespace LudumDare29.Entities
 
 
         public Player(string contentManagerName, bool addToManagers) :
-			base()
+			base(contentManagerName, addToManagers)
 		{
 			// Don't delete this:
             ContentManagerName = contentManagerName;
-            InitializeEntity(addToManagers);
+           
 
 		}
 
-		protected virtual void InitializeEntity(bool addToManagers)
+		protected override void InitializeEntity(bool addToManagers)
 		{
 			// Generated Initialize
 			LoadStaticContent(ContentManagerName);
+			SpriteInstance = new FlatRedBall.Sprite();
+			SpriteInstance.Name = "SpriteInstance";
+			HandSprite = new FlatRedBall.Sprite();
+			HandSprite.Name = "HandSprite";
 			
-			PostInitialize();
-			if (addToManagers)
-			{
-				AddToManagers(null);
-			}
+			base.InitializeEntity(addToManagers);
 
 
 		}
 
 // Generated AddToManagers
-		public virtual void ReAddToManagers (Layer layerToAddTo)
+		public override void ReAddToManagers (Layer layerToAddTo)
 		{
-			LayerProvidedByContainer = layerToAddTo;
-			SpriteManager.AddPositionedObject(this);
+			base.ReAddToManagers(layerToAddTo);
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(HandSprite, LayerProvidedByContainer);
 		}
-		public virtual void AddToManagers (Layer layerToAddTo)
+		public override void AddToManagers (Layer layerToAddTo)
 		{
 			LayerProvidedByContainer = layerToAddTo;
-			SpriteManager.AddPositionedObject(this);
-			AddToManagersBottomUp(layerToAddTo);
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(HandSprite, LayerProvidedByContainer);
+			base.AddToManagers(layerToAddTo);
 			CustomInitialize();
 		}
 
-		public virtual void Activity()
+		public override void Activity()
 		{
 			// Generated Activity
+			base.Activity();
 			
 			CustomActivity();
 			
 			// After Custom Activity
 		}
 
-		public virtual void Destroy()
+		public override void Destroy()
 		{
 			// Generated Destroy
-			SpriteManager.RemovePositionedObject(this);
+			base.Destroy();
 			
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSprite(SpriteInstance);
+			}
+			if (HandSprite != null)
+			{
+				SpriteManager.RemoveSprite(HandSprite);
+			}
 
 
 			CustomDestroy();
 		}
 
 		// Generated Methods
-		public virtual void PostInitialize ()
+		public override void PostInitialize ()
 		{
 			bool oldShapeManagerSuppressAdd = FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = true;
+			base.PostInitialize();
+			if (mCollision.Parent == null)
+			{
+				mCollision.CopyAbsoluteToRelative();
+				mCollision.AttachTo(this, false);
+			}
+			Collision.Height = 48f;
+			Collision.Width = 28f;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.CopyAbsoluteToRelative();
+				SpriteInstance.AttachTo(this, false);
+			}
+			SpriteInstance.TextureScale = 1f;
+			SpriteInstance.AnimationChains = AnimationChainListFile;
+			SpriteInstance.CurrentChainName = "StandRight";
+			SpriteInstance.PixelSize = 1.5f;
+			if (HandSprite.Parent == null)
+			{
+				HandSprite.CopyAbsoluteToRelative();
+				HandSprite.AttachTo(this, false);
+			}
+			HandSprite.TextureScale = 1f;
+			HandSprite.AnimationChains = AnimationChainListFile;
+			HandSprite.CurrentChainName = "Hand";
+			HandSprite.PixelSize = 1.5f;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
-		public virtual void AddToManagersBottomUp (Layer layerToAddTo)
+		public override void AddToManagersBottomUp (Layer layerToAddTo)
 		{
-			AssignCustomVariables(false);
+			base.AddToManagersBottomUp(layerToAddTo);
 		}
-		public virtual void RemoveFromManagers ()
+		public override void RemoveFromManagers ()
 		{
-			SpriteManager.ConvertToManuallyUpdated(this);
+			base.RemoveFromManagers();
+			base.RemoveFromManagers();
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(SpriteInstance);
+			}
+			if (HandSprite != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(HandSprite);
+			}
 		}
-		public virtual void AssignCustomVariables (bool callOnContainedElements)
+		public override void AssignCustomVariables (bool callOnContainedElements)
 		{
+			base.AssignCustomVariables(callOnContainedElements);
 			if (callOnContainedElements)
 			{
 			}
+			mCollision.Height = 48f;
+			mCollision.Width = 28f;
+			SpriteInstance.TextureScale = 1f;
+			SpriteInstance.AnimationChains = AnimationChainListFile;
+			SpriteInstance.CurrentChainName = "StandRight";
+			SpriteInstance.PixelSize = 1.5f;
+			HandSprite.TextureScale = 1f;
+			HandSprite.AnimationChains = AnimationChainListFile;
+			HandSprite.CurrentChainName = "Hand";
+			HandSprite.PixelSize = 1.5f;
+			GroundMovement = Player.MovementValues["ImmediateVelocityOnGround"];
+			AirMovement = Player.MovementValues["ImmediateVelocityBeforeDoubleJump"];
+			AfterDoubleJump = Player.MovementValues["ImmediateVelocityInAir"];
 		}
-		public virtual void ConvertToManuallyUpdated ()
+		public override void ConvertToManuallyUpdated ()
 		{
+			base.ConvertToManuallyUpdated();
 			this.ForceUpdateDependenciesDeep();
 			SpriteManager.ConvertToManuallyUpdated(this);
+			SpriteManager.ConvertToManuallyUpdated(SpriteInstance);
+			SpriteManager.ConvertToManuallyUpdated(HandSprite);
 		}
-		public static void LoadStaticContent (string contentManagerName)
+		public static new void LoadStaticContent (string contentManagerName)
 		{
 			if (string.IsNullOrEmpty(contentManagerName))
 			{
 				throw new ArgumentException("contentManagerName cannot be empty or null");
 			}
 			ContentManagerName = contentManagerName;
+			PlatformerCharacterBase.LoadStaticContent(contentManagerName);
 			#if DEBUG
 			if (contentManagerName == FlatRedBallServices.GlobalContentManager)
 			{
@@ -175,6 +308,16 @@ namespace LudumDare29.Entities
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
+				if (!FlatRedBallServices.IsLoaded<FlatRedBall.Graphics.Animation.AnimationChainList>(@"content/entities/player/animationchainlistfile.achx", ContentManagerName))
+				{
+					registerUnload = true;
+				}
+				AnimationChainListFile = FlatRedBallServices.Load<FlatRedBall.Graphics.Animation.AnimationChainList>(@"content/entities/player/animationchainlistfile.achx", ContentManagerName);
+				if (!FlatRedBallServices.IsLoaded<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/player/playertexture.png", ContentManagerName))
+				{
+					registerUnload = true;
+				}
+				PlayerTexture = FlatRedBallServices.Load<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/player/playertexture.png", ContentManagerName);
 			}
 			if (registerUnload && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 			{
@@ -189,7 +332,7 @@ namespace LudumDare29.Entities
 			}
 			CustomLoadStaticContent(contentManagerName);
 		}
-		public static void UnloadStaticContent ()
+		public static new void UnloadStaticContent ()
 		{
 			if (LoadedContentManagers.Count != 0)
 			{
@@ -198,33 +341,70 @@ namespace LudumDare29.Entities
 			}
 			if (LoadedContentManagers.Count == 0)
 			{
+				if (AnimationChainListFile != null)
+				{
+					AnimationChainListFile= null;
+				}
+				if (PlayerTexture != null)
+				{
+					PlayerTexture= null;
+				}
 			}
 		}
 		[System.Obsolete("Use GetFile instead")]
-		public static object GetStaticMember (string memberName)
+		public static new object GetStaticMember (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "AnimationChainListFile":
+					return AnimationChainListFile;
+				case  "PlayerTexture":
+					return PlayerTexture;
+			}
 			return null;
 		}
-		public static object GetFile (string memberName)
+		public static new object GetFile (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "AnimationChainListFile":
+					return AnimationChainListFile;
+				case  "PlayerTexture":
+					return PlayerTexture;
+			}
 			return null;
 		}
 		object GetMember (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "AnimationChainListFile":
+					return AnimationChainListFile;
+				case  "PlayerTexture":
+					return PlayerTexture;
+			}
 			return null;
 		}
-		protected bool mIsPaused;
-		public override void Pause (FlatRedBall.Instructions.InstructionList instructions)
+		public override void SetToIgnorePausing ()
 		{
-			base.Pause(instructions);
-			mIsPaused = true;
+			base.SetToIgnorePausing();
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(Collision);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(SpriteInstance);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(HandSprite);
 		}
-		public virtual void SetToIgnorePausing ()
+		public override void MoveToLayer (Layer layerToMoveTo)
 		{
-			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(this);
-		}
-		public virtual void MoveToLayer (Layer layerToMoveTo)
-		{
+			base.MoveToLayer(layerToMoveTo);
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(SpriteInstance);
+			}
+			SpriteManager.AddToLayer(SpriteInstance, layerToMoveTo);
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(HandSprite);
+			}
+			SpriteManager.AddToLayer(HandSprite, layerToMoveTo);
 			LayerProvidedByContainer = layerToMoveTo;
 		}
 

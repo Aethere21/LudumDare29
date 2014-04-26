@@ -30,14 +30,40 @@ namespace LudumDare29.Entities
 	{
 		private void CustomInitialize()
 		{
-
-
+            HandSprite.Detach();
+            HandSprite.AttachTo(SpriteInstance, false);
+            FlatRedBallServices.Game.IsMouseVisible = true;
+            HandSprite.RelativePosition = new Vector3(1, 4, 0);
 		}
 
 		private void CustomActivity()
 		{
+            FlatRedBall.Debugging.Debugger.Write("Pos: " + HandSprite.RelativePosition + "\nRotation: " + HandSprite.RelativeRotationZ);
 
-
+            if (InputManager.Keyboard.KeyReleased(Keys.J))
+            {
+                HandSprite.RelativePosition.X += 1f;
+            }
+            if (InputManager.Keyboard.KeyReleased(Keys.H))
+            {
+                HandSprite.RelativePosition.X -= 1f;
+            }
+            if (InputManager.Keyboard.KeyReleased(Keys.K))
+            {
+                HandSprite.RelativeRotationZ += 0.01f;
+            }
+            if(InputManager.Keyboard.KeyReleased(Keys.N))
+            {
+                HandSprite.RelativePosition.Y += 1;
+            }
+            if (InputManager.Keyboard.KeyReleased(Keys.M))
+            {
+                HandSprite.RelativePosition.Y -= 1;
+            }
+            
+            float distanceX = InputManager.Mouse.WorldXAt(0) - HandSprite.Position.X;
+            float distanceY = InputManager.Mouse.WorldYAt(0) - HandSprite.Position.Y;
+            HandSprite.RelativeRotationZ = (float)Math.Atan2((double)distanceY, (double)distanceX);
 		}
 
 		private void CustomDestroy()

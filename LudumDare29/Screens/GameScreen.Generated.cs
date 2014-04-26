@@ -38,6 +38,8 @@ namespace LudumDare29.Screens
 		protected static FlatRedBall.TileGraphics.LayeredTileMap StartLevel;
 		
 		private FlatRedBall.TileGraphics.LayeredTileMap TiledMap;
+		private FlatRedBall.TileCollisions.TileShapeCollection TileCollisionShapes;
+		private LudumDare29.Entities.Player PlayerInstance;
 
 		public GameScreen()
 			: base("GameScreen")
@@ -50,6 +52,10 @@ namespace LudumDare29.Screens
 			LoadStaticContent(ContentManagerName);
 			TiledMap = new FlatRedBall.TileGraphics.LayeredTileMap();
 			TiledMap.Name = "TiledMap";
+			TileCollisionShapes = new FlatRedBall.TileCollisions.TileShapeCollection();
+			TileCollisionShapes.Name = "TileCollisionShapes";
+			PlayerInstance = new LudumDare29.Entities.Player(ContentManagerName, false);
+			PlayerInstance.Name = "PlayerInstance";
 			
 			
 			PostInitialize();
@@ -65,7 +71,7 @@ namespace LudumDare29.Screens
 		public override void AddToManagers ()
 		{
 			StartLevel.AddToManagers();
-			TiledMap.AddToManagers();
+			PlayerInstance.AddToManagers(mLayer);
 			base.AddToManagers();
 			AddToManagersBottomUp();
 			CustomInitialize();
@@ -78,6 +84,7 @@ namespace LudumDare29.Screens
 			if (!IsPaused)
 			{
 				
+				PlayerInstance.Activity();
 			}
 			else
 			{
@@ -100,9 +107,14 @@ namespace LudumDare29.Screens
 			StartLevel.Destroy();
 			StartLevel = null;
 			
-			if (TiledMap != null)
+			if (TileCollisionShapes != null)
 			{
-				TiledMap.Destroy();
+				TileCollisionShapes.Visible = false;
+			}
+			if (PlayerInstance != null)
+			{
+				PlayerInstance.Destroy();
+				PlayerInstance.Detach();
 			}
 
 			base.Destroy();
@@ -125,19 +137,22 @@ namespace LudumDare29.Screens
 		}
 		public virtual void RemoveFromManagers ()
 		{
-			if (TiledMap != null)
+			if (TileCollisionShapes != null)
 			{
-				TiledMap.Destroy();
+				TileCollisionShapes.Visible = false;
 			}
+			PlayerInstance.RemoveFromManagers();
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
 			if (callOnContainedElements)
 			{
+				PlayerInstance.AssignCustomVariables(true);
 			}
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
+			PlayerInstance.ConvertToManuallyUpdated();
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{
@@ -159,6 +174,7 @@ namespace LudumDare29.Screens
 			{
 			}
 			StartLevel = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/startlevel.tilb", contentManagerName);
+			LudumDare29.Entities.Player.LoadStaticContent(contentManagerName);
 			CustomLoadStaticContent(contentManagerName);
 		}
 		[System.Obsolete("Use GetFile instead")]

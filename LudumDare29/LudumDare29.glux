@@ -5,9 +5,9 @@
   <SetResolution>false</SetResolution>
   <ResolutionWidth>800</ResolutionWidth>
   <ResolutionHeight>600</ResolutionHeight>
-  <SetOrthogonalResolution>false</SetOrthogonalResolution>
-  <OrthogonalWidth>800</OrthogonalWidth>
-  <OrthogonalHeight>600</OrthogonalHeight>
+  <SetOrthogonalResolution>true</SetOrthogonalResolution>
+  <OrthogonalWidth>600</OrthogonalWidth>
+  <OrthogonalHeight>400</OrthogonalHeight>
   <Screens>
     <ScreenSave>
       <Tags>
@@ -31,6 +31,23 @@
           <SourceClassType>LayeredTileMap</SourceClassType>
           <InstanceName>TiledMap</InstanceName>
           <AttachToContainer>true</AttachToContainer>
+          <AddToManagers>false</AddToManagers>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>TileShapeCollection</SourceClassType>
+          <InstanceName>TileCollisionShapes</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <SourceType>Entity</SourceType>
+          <SourceClassType>Entities\Player</SourceClassType>
+          <InstanceName>PlayerInstance</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
           <IndependentOfCamera>true</IndependentOfCamera>
         </NamedObjectSave>
       </NamedObjects>
@@ -44,6 +61,121 @@
     </ScreenSave>
   </Screens>
   <Entities>
+    <EntitySave>
+      <Properties>
+        <PropertySave>
+          <Name>StateChainCollection</Name>
+          <ValueAsString>&lt;?xml version="1.0"?&gt;
+&lt;StateChainCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;StateChains /&gt;
+&lt;/StateChainCollection&gt;</ValueAsString>
+        </PropertySave>
+      </Properties>
+      <Tags>
+        <string>GLUE</string>
+      </Tags>
+      <Source>GLUE</Source>
+      <CustomVariables>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>Entities/PlatformerCharacterBase/MovementValues.csv</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>GroundMovement</Name>
+          <Type>Entities/PlatformerCharacterBase/MovementValues.csv</Type>
+          <DefaultValue xsi:type="xsd:string">ImmediateVelocityOnGround</DefaultValue>
+          <SetByDerived>true</SetByDerived>
+          <CreatesEvent>true</CreatesEvent>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>Entities/PlatformerCharacterBase/MovementValues.csv</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>AirMovement</Name>
+          <Type>Entities/PlatformerCharacterBase/MovementValues.csv</Type>
+          <DefaultValue xsi:type="xsd:string">ImmediateVelocityBeforeDoubleJump</DefaultValue>
+          <SetByDerived>true</SetByDerived>
+          <CreatesEvent>true</CreatesEvent>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>Entities/PlatformerCharacterBase/MovementValues.csv</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>AfterDoubleJump</Name>
+          <Type>Entities/PlatformerCharacterBase/MovementValues.csv</Type>
+          <DefaultValue xsi:type="xsd:string">ImmediateVelocityInAir</DefaultValue>
+          <SetByDerived>true</SetByDerived>
+          <CreatesEvent>true</CreatesEvent>
+        </CustomVariable>
+      </CustomVariables>
+      <Name>Entities\PlatformerCharacterBase</Name>
+      <NamedObjects>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Height</Member>
+            <ValueAsFloat>48</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Width</Member>
+            <ValueAsFloat>32</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>true</ValueAsBool>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>Color</Type>
+            <Member>Color</Member>
+            <ValueAsString>Red</ValueAsString>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceClassType>AxisAlignedRectangle</SourceClassType>
+          <InstanceName>Collision</InstanceName>
+          <HasPublicProperty>true</HasPublicProperty>
+          <ExposedInDerived>true</ExposedInDerived>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+      </NamedObjects>
+      <ReferencedFiles>
+        <ReferencedFileSave>
+          <Name>Entities/PlatformerCharacterBase/MovementValues.csv</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <HasPublicProperty>true</HasPublicProperty>
+          <CreatesDictionary>true</CreatesDictionary>
+          <RuntimeType />
+        </ReferencedFileSave>
+      </ReferencedFiles>
+      <Events>
+        <EventResponseSave>
+          <EventName>AfterGroundMovementSet</EventName>
+          <SourceVariable>GroundMovement</SourceVariable>
+          <BeforeOrAfter>After</BeforeOrAfter>
+        </EventResponseSave>
+        <EventResponseSave>
+          <EventName>AfterAirMovementSet</EventName>
+          <SourceVariable>AirMovement</SourceVariable>
+          <BeforeOrAfter>After</BeforeOrAfter>
+        </EventResponseSave>
+        <EventResponseSave>
+          <EventName>AfterAfterDoubleJumpSet</EventName>
+          <SourceVariable>AfterDoubleJump</SourceVariable>
+          <BeforeOrAfter>After</BeforeOrAfter>
+        </EventResponseSave>
+      </Events>
+      <Is2D>true</Is2D>
+    </EntitySave>
     <EntitySave>
       <Tags>
         <string>GLUE</string>
@@ -80,8 +212,149 @@
           <Name>Z</Name>
           <Type>float</Type>
         </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>Entities/PlatformerCharacterBase/MovementValues.csv</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>GroundMovement</Name>
+          <Type>Entities/PlatformerCharacterBase/MovementValues.csv</Type>
+          <DefaultValue xsi:type="xsd:string">ImmediateVelocityOnGround</DefaultValue>
+          <DefinedByBase>true</DefinedByBase>
+          <CreatesEvent>true</CreatesEvent>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>Entities/PlatformerCharacterBase/MovementValues.csv</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>AirMovement</Name>
+          <Type>Entities/PlatformerCharacterBase/MovementValues.csv</Type>
+          <DefaultValue xsi:type="xsd:string">ImmediateVelocityBeforeDoubleJump</DefaultValue>
+          <DefinedByBase>true</DefinedByBase>
+          <CreatesEvent>true</CreatesEvent>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>Entities/PlatformerCharacterBase/MovementValues.csv</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>AfterDoubleJump</Name>
+          <Type>Entities/PlatformerCharacterBase/MovementValues.csv</Type>
+          <DefaultValue xsi:type="xsd:string">ImmediateVelocityInAir</DefaultValue>
+          <DefinedByBase>true</DefinedByBase>
+          <CreatesEvent>true</CreatesEvent>
+        </CustomVariable>
       </CustomVariables>
+      <BaseEntity>Entities\PlatformerCharacterBase</BaseEntity>
       <Name>Entities\Player</Name>
+      <NamedObjects>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Height</Member>
+            <ValueAsFloat>48</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Width</Member>
+            <ValueAsFloat>28</ValueAsFloat>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceClassType>AxisAlignedRectangle</SourceClassType>
+          <InstanceName>Collision</InstanceName>
+          <HasPublicProperty>true</HasPublicProperty>
+          <ExposedInDerived>true</ExposedInDerived>
+          <AttachToContainer>true</AttachToContainer>
+          <DefinedByBase>true</DefinedByBase>
+          <InstantiatedByBase>true</InstantiatedByBase>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>TextureScale</Member>
+            <ValueAsFloat>1</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>AnimationChainList</Type>
+            <Member>AnimationChains</Member>
+            <ValueAsString>AnimationChainListFile</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>string</Type>
+            <Member>CurrentChainName</Member>
+            <ValueAsString>StandRight</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>Texture2D</Type>
+            <Member>Texture</Member>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>PixelSize</Member>
+            <ValueAsFloat>1.5</ValueAsFloat>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Sprite</SourceClassType>
+          <InstanceName>SpriteInstance</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>TextureScale</Member>
+            <ValueAsFloat>1</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>Texture2D</Type>
+            <Member>Texture</Member>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>AnimationChainList</Type>
+            <Member>AnimationChains</Member>
+            <ValueAsString>AnimationChainListFile</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>string</Type>
+            <Member>CurrentChainName</Member>
+            <ValueAsString>Hand</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>PixelSize</Member>
+            <ValueAsFloat>1.5</ValueAsFloat>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Sprite</SourceClassType>
+          <InstanceName>HandSprite</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+      </NamedObjects>
+      <ReferencedFiles>
+        <ReferencedFileSave>
+          <Name>Entities/Player/AnimationChainListFile.achx</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <RuntimeType>FlatRedBall.Graphics.Animation.AnimationChainList</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Entities/Player/PlayerTexture.png</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <RuntimeType>Microsoft.Xna.Framework.Graphics.Texture2D</RuntimeType>
+        </ReferencedFileSave>
+      </ReferencedFiles>
       <Is2D>true</Is2D>
     </EntitySave>
   </Entities>
