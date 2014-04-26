@@ -58,9 +58,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>PlayerTexture</Name>
     </None>
+    <None Include="Screens\GameScreen\Level2.tilb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>Level2</Name>
+    </None>
     <None Include="Screens\GameScreen\MainTiles.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>MainTiles</Name>
+    </None>
+    <None Include="Screens\GameScreen\MainTileset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MainTileset</Name>
     </None>
     <None Include="Screens\GameScreen\MainTileset1234.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

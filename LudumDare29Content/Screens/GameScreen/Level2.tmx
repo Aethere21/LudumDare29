@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="MainTileset" tilewidth="32" tileheight="32">
+  <image source="../../../../../../../Desktop/Ludum Dare/MainTileset.png" trans="ffffff" width="1024" height="1024"/>
+  <tile id="1">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="99">
+   <properties>
+    <property name="Name" value="SpawnPos"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="50" height="50">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3QwQkAIAwEwait2n8NsYD4EyQwA/s/LgIAAAAAAKC2fw8AuBin2bz1/BUAABKJeQDHECcAAA==
+  </data>
+ </layer>
+</map>

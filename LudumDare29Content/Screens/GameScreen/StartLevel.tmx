@@ -1,26 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="60" height="40" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="MainTileset1234" tilewidth="32" tileheight="32">
-  <image source="../../../../../../../Desktop/Ludum Dare/MainTileset1234.png" trans="ffffff" width="256" height="192"/>
-  <tile id="10">
+ <tileset firstgid="1" name="MainTileset" tilewidth="32" tileheight="32">
+  <image source="../../../../../../../Desktop/Ludum Dare/MainTileset.png" trans="ffffff" width="1024" height="1024"/>
+  <tile id="1">
    <properties>
     <property name="Name" value="Collision"/>
    </properties>
   </tile>
-  <tile id="27">
+  <tile id="33">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="34">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="36">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="39">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="64">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="65">
+   <properties>
+    <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="69">
+   <properties>
+    <property name="Name" value="Light"/>
+   </properties>
+  </tile>
+  <tile id="99">
    <properties>
     <property name="Name" value="StartPos"/>
+   </properties>
+  </tile>
+  <tile id="103">
+   <properties>
+    <property name="Name" value="NextLevel_Level2"/>
+   </properties>
+  </tile>
+  <tile id="132">
+   <properties>
+    <property name="Name" value="Sign_Test Test Test"/>
    </properties>
   </tile>
  </tileset>
  <layer name="Main" width="60" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3DMQ0AAAwDoP7z73cu+hQSEgAAAAAAGm4sAAAALHihvz9tgCUAAA==
+   H4sIAAAAAAAAC+3SQQ5AMBBG4UbiIoSew841cDb3NAsLkXZWzDTt+5I/Fo3IQwgAAAAAAADfWWVb4qqdafeUbpcdiat2pt1TukE2Gs/TJJuN58mj9+9/qrRei2fmLMat0fAd51h+Y8veXHPNvc/m817tve/uFnojvfTSSy+99NJLb8W9XWPrG9sF0CjLL4AlAAA=
+  </data>
+ </layer>
+ <layer name="Other" width="60" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3OywmAMBAE0FQntqFebMRK1D7NIccQEIPx8x4MexgWJgQAAACAuvqYIXNLXenn6caYKXNLXennjDVmu7D9jfbWA262tB4AAADAp80pf9GlQE0HiD8v/oAlAAA=
   </data>
  </layer>
  <layer name="Invisible" width="60" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3OMQ0AAAgDsAnBv06eeSAkrYImAAAAAPDLXAcAAAAAoBZSoZgAgCUAAA==
+   H4sIAAAAAAAAC+3PQREAIAwEscrBBl7wrwEL/K5MEwW7VQAAAAD85qQDgJZWOiDA8wxTn3c6AgAAeHIB0pMbz4AlAAA=
   </data>
  </layer>
 </map>

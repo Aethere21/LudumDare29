@@ -119,6 +119,10 @@
     <Compile Include="Entities\Bullet.Generated.cs">
       <DependentUpon>Bullet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entities\NextLevelEntity.cs" />
+    <Compile Include="Entities\NextLevelEntity.Generated.cs">
+      <DependentUpon>NextLevelEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Entities\PlatformerCharacterBase.cs" />
     <Compile Include="Entities\PlatformerCharacterBase.Event.cs">
       <DependentUpon>PlatformerCharacterBase.cs</DependentUpon>

@@ -77,6 +77,8 @@ namespace LudumDare29.Screens
         {
             const float tileSize = 16;
 
+            string[] splitters = { "_" };
+
             foreach(MapDrawableBatch layer in TiledMap.MapLayers)
             {
                 if(layer.NamedTileOrderedIndexes.ContainsKey("Collision"))
@@ -106,6 +108,29 @@ namespace LudumDare29.Screens
                         layer.Visible = false;
                     }
                 }
+
+                foreach (KeyValuePair<string, List<int>> entry in layer.NamedTileOrderedIndexes)
+                {
+                    if (entry.Key.StartsWith("NextLevel_"))
+                    {
+                        string[] levelName = entry.Key.Split(splitters, StringSplitOptions.None);
+
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            Entities.NextLevelEntity nextLevel = new Entities.NextLevelEntity();
+                            nextLevel.Position = new Vector3(centerX, centerY, 15);
+                            nextLevel.nextLevelName = levelName[1];
+                            NextLevelEntityList.Add(nextLevel);
+                        }
+                    }
+                }
             }
         }
 
@@ -113,7 +138,6 @@ namespace LudumDare29.Screens
         {
             for (int i = shapes.AxisAlignedRectangles.Count - 1; i >= 0; i--)
             {
-                //shapes.Rectangles[i].RemoveSelfFromListsBelongingTo();
                 ShapeManager.Remove(shapes.AxisAlignedRectangles[i]);
             }
         }
@@ -137,13 +161,21 @@ namespace LudumDare29.Screens
                     BulletList[i].Destroy();
                 }
             }
+
+            for (int x = NextLevelEntityList.Count - 1; x >= 0; x--)
+            {
+                if(PlayerInstance.Collision.CollideAgainst(NextLevelEntityList[x].Collision))
+                {
+                    SetLevelByName(NextLevelEntityList[x].nextLevelName);
+                    //Console.WriteLine("Collided!");
+                }
+            }
         }
 
         private void CameraActivity()
         {
             Camera.Main.Velocity.Y = PlayerInstance.Position.Y - Camera.Main.Position.Y;
             Camera.Main.Velocity.X = PlayerInstance.Position.X - Camera.Main.Position.X;
-            //Camera.Main.Position = PlayerInstance.Position;
         }
 	}
 }

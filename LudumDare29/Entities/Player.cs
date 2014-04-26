@@ -53,8 +53,6 @@ namespace LudumDare29.Entities
 
 		private void CustomActivity()
 		{
-            FlatRedBall.Debugging.Debugger.Write("Pos: " + GunRectangle.RelativePosition + "\nRotation: " + HandSprite.RelativeRotationZ);
-
             ArmActivity();
             MovementAnimations();
 

@@ -39,11 +39,13 @@ namespace LudumDare29.Screens
 		static bool HasBeenLoadedWithGlobalContentManager = false;
 		#endif
 		protected static FlatRedBall.TileGraphics.LayeredTileMap StartLevel;
+		protected static FlatRedBall.TileGraphics.LayeredTileMap Level2;
 		
 		private FlatRedBall.TileGraphics.LayeredTileMap TiledMap;
 		private LudumDare29.Entities.Player PlayerInstance;
 		private FlatRedBall.Math.Geometry.ShapeCollection TileCollisionShapes;
 		private PositionedObjectList<LudumDare29.Entities.Bullet> BulletList;
+		private PositionedObjectList<LudumDare29.Entities.NextLevelEntity> NextLevelEntityList;
 
 		public GameScreen()
 			: base("GameScreen")
@@ -62,6 +64,8 @@ namespace LudumDare29.Screens
 			TileCollisionShapes.Name = "TileCollisionShapes";
 			BulletList = new PositionedObjectList<LudumDare29.Entities.Bullet>();
 			BulletList.Name = "BulletList";
+			NextLevelEntityList = new PositionedObjectList<LudumDare29.Entities.NextLevelEntity>();
+			NextLevelEntityList.Name = "NextLevelEntityList";
 			
 			
 			PostInitialize();
@@ -76,7 +80,6 @@ namespace LudumDare29.Screens
 // Generated AddToManagers
 		public override void AddToManagers ()
 		{
-			StartLevel.AddToManagers();
 			BulletFactory.Initialize(BulletList, ContentManagerName);
 			PlayerInstance.AddToManagers(mLayer);
 			TileCollisionShapes.AddToManagers();
@@ -101,6 +104,14 @@ namespace LudumDare29.Screens
 						BulletList[i].Activity();
 					}
 				}
+				for (int i = NextLevelEntityList.Count - 1; i > -1; i--)
+				{
+					if (i < NextLevelEntityList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						NextLevelEntityList[i].Activity();
+					}
+				}
 			}
 			else
 			{
@@ -123,8 +134,11 @@ namespace LudumDare29.Screens
 			BulletFactory.Destroy();
 			StartLevel.Destroy();
 			StartLevel = null;
+			Level2.Destroy();
+			Level2 = null;
 			
 			BulletList.MakeOneWay();
+			NextLevelEntityList.MakeOneWay();
 			if (PlayerInstance != null)
 			{
 				PlayerInstance.Destroy();
@@ -138,7 +152,12 @@ namespace LudumDare29.Screens
 			{
 				BulletList[i].Destroy();
 			}
+			for (int i = NextLevelEntityList.Count - 1; i > -1; i--)
+			{
+				NextLevelEntityList[i].Destroy();
+			}
 			BulletList.MakeTwoWay();
+			NextLevelEntityList.MakeTwoWay();
 
 			base.Destroy();
 
@@ -169,6 +188,10 @@ namespace LudumDare29.Screens
 			{
 				BulletList[i].Destroy();
 			}
+			for (int i = NextLevelEntityList.Count - 1; i > -1; i--)
+			{
+				NextLevelEntityList[i].Destroy();
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
@@ -183,6 +206,10 @@ namespace LudumDare29.Screens
 			for (int i = 0; i < BulletList.Count; i++)
 			{
 				BulletList[i].ConvertToManuallyUpdated();
+			}
+			for (int i = 0; i < NextLevelEntityList.Count; i++)
+			{
+				NextLevelEntityList[i].ConvertToManuallyUpdated();
 			}
 		}
 		public static void LoadStaticContent (string contentManagerName)
@@ -205,6 +232,10 @@ namespace LudumDare29.Screens
 			{
 			}
 			StartLevel = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/startlevel.tilb", contentManagerName);
+			if (!FlatRedBallServices.IsLoaded<FlatRedBall.TileGraphics.LayeredTileMap>(@"content/screens/gamescreen/level2.tilb", contentManagerName))
+			{
+			}
+			Level2 = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/level2.tilb", contentManagerName);
 			LudumDare29.Entities.Player.LoadStaticContent(contentManagerName);
 			CustomLoadStaticContent(contentManagerName);
 		}
@@ -215,6 +246,8 @@ namespace LudumDare29.Screens
 			{
 				case  "StartLevel":
 					return StartLevel;
+				case  "Level2":
+					return Level2;
 			}
 			return null;
 		}
@@ -224,6 +257,8 @@ namespace LudumDare29.Screens
 			{
 				case  "StartLevel":
 					return StartLevel;
+				case  "Level2":
+					return Level2;
 			}
 			return null;
 		}
@@ -233,6 +268,8 @@ namespace LudumDare29.Screens
 			{
 				case  "StartLevel":
 					return StartLevel;
+				case  "Level2":
+					return Level2;
 			}
 			return null;
 		}
