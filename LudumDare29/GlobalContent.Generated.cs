@@ -23,13 +23,52 @@ namespace LudumDare29
 		static List<NamedDelegate> LoadMethodList = new List<NamedDelegate>();
 		
 		
+		static Microsoft.Xna.Framework.Graphics.Texture2D menemyTextures;
+		//Blocks the thread on request of enemyTextures until it has been loaded
+		static ManualResetEvent menemyTexturesMre = new ManualResetEvent(false);
+		// Used to lock getter and setter so that enemyTextures can be set on any thread even if its load is in progrss
+		static object menemyTextures_Lock = new object();
+		public static Microsoft.Xna.Framework.Graphics.Texture2D enemyTextures
+		{
+			get
+			{
+				lock (menemyTextures_Lock)
+				{
+					bool isBlocking = !menemyTexturesMre.WaitOne(0);
+					if (isBlocking)
+					{
+						RequestContentLoad("GlobalContent/Textures/enemyTextures.png");
+					}
+					menemyTexturesMre.WaitOne();
+					return menemyTextures;
+				}
+			}
+			set
+			{
+				lock (menemyTextures_Lock)
+				{
+					menemyTextures = value;
+					menemyTexturesMre.Set();
+				}
+			}
+		}
 		[System.Obsolete("Use GetFile instead")]
 		public static object GetStaticMember (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "enemyTextures":
+					return enemyTextures;
+			}
 			return null;
 		}
 		public static object GetFile (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "enemyTextures":
+					return enemyTextures;
+			}
 			return null;
 		}
 		public static bool IsInitialized { get; private set; }
@@ -39,6 +78,9 @@ namespace LudumDare29
 		{
 			
 			NamedDelegate namedDelegate = new NamedDelegate();
+			namedDelegate.Name = "GlobalContent/Textures/enemyTextures.png";
+			namedDelegate.LoadMethod = LoadGlobalContent_Textures_enemyTextures_png;
+			LoadMethodList.Add( namedDelegate );
 			
 			#if WINDOWS_8
 			System.Threading.Tasks.Task.Run((System.Action)AsyncInitialize);
@@ -93,6 +135,11 @@ namespace LudumDare29
 			}
 			IsInitialized = true;
 			
+		}
+		static void LoadGlobalContent_Textures_enemyTextures_png ()
+		{
+			menemyTextures = FlatRedBallServices.Load<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/globalcontent/textures/enemytextures.png", ContentManagerName);
+			menemyTexturesMre.Set();
 		}
 		public static void Reload (object whatToReload)
 		{

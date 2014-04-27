@@ -32,23 +32,34 @@ namespace LudumDare29.Screens
 {
 	public partial class GameScreen
 	{
+
+        bool switchingLevels = false;
+
+
 		void CustomInitialize()
 		{
             TileCollisionShapes.Visible = true;
-            GlobalData.PlayerData.currentLevel = "StartLevel";
+            GlobalData.PlayerData.currentLevel = "Level2";
             GlobalData.PlayerData.gunDamage = 1;
             GlobalData.PlayerData.health = 100;
             GlobalData.PlayerData.playerDefense = 0;
             GlobalData.PlayerData.score = 0;
             SetLevelByName(GlobalData.PlayerData.currentLevel);
+
+            //FlatRedBallServices.Game.TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 25);
 		}
 
 		void CustomActivity(bool firstTimeCalled)
 		{
-            CollisionActivity();
+            if(!switchingLevels)
+            {
+                CollisionActivity();
+            }
             CameraActivity();
 
             PlayerInstance.DetermineMovementValues();
+
+            GlobalData.PlayerData.playerPos = new Vector2(PlayerInstance.Position.X, PlayerInstance.Position.Y);
 		}
 
 		void CustomDestroy()
@@ -65,12 +76,17 @@ namespace LudumDare29.Screens
 
         private void SetLevelByName(string name)
         {
+            switchingLevels = true;
             TiledMap.RemoveFromManagersOneWay();
+            TiledMap.RemoveSelfFromListsBelongingTo();
+            TiledMap.Destroy();
             RemoveShapes(TileCollisionShapes);
+            RemoveShapes(EntityCollisionShapes);
             ClearList();
             TiledMap = (LayeredTileMap)GetMember(name);
             TiledMap.AddToManagers();
             SetUpTiles();
+            switchingLevels = false;
         }
 
         public void ClearList()
@@ -83,14 +99,33 @@ namespace LudumDare29.Screens
             {
                 ActionEntityList[x].Destroy();
             }
-            for (int z = ActionEntityList.Count - 1; z >= 0; z--)
+            for (int z = BulletList.Count - 1; z >= 0; z--)
             {
                 BulletList[z].Destroy();
             }
-            for (int y = ActionEntityList.Count - 1; y >= 0; y--)
+            for (int y = SignEntityList.Count - 1; y >= 0; y--)
             {
                 SignEntityList[y].Destroy();
             }
+            for (int g = EnemyCornerList.Count - 1; g >= 0; g--)
+            {
+                EnemyCornerList[g].Destroy();
+            }
+            for (int h = GroundEnemyList.Count - 1; h >= 0; h--)
+            {
+                GroundEnemyList[h].Destroy();
+            }
+            for (int o = EnemyBulletList.Count - 1; o >= 0; o--)
+            {
+                EnemyBulletList[o].Destroy();
+            }
+            NextLevelEntityList.Clear();
+            ActionEntityList.Clear();
+            BulletList.Clear();
+            EnemyBulletList.Clear();
+            GroundEnemyList.Clear();
+            SignEntityList.Clear();
+            EnemyCornerList.Clear();
         }
 
         private void SetUpTiles()
@@ -151,7 +186,7 @@ namespace LudumDare29.Screens
                         }
                     }
 
-                    if(entry.Key.StartsWith("Sign_"))
+                    if (entry.Key.StartsWith("Sign_"))
                     {
                         string[] signMessage = entry.Key.Split(splitters, StringSplitOptions.None);
 
@@ -192,6 +227,84 @@ namespace LudumDare29.Screens
                             layer.Visible = false;
                         }
                     }
+
+                    if (entry.Key.StartsWith("EnemyCorner_"))
+                    {
+                        string[] rotationString = entry.Key.Split(splitters, StringSplitOptions.None);
+
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            Entities.EnemyCorner enemy = new Entities.EnemyCorner();
+                            enemy.Position = new Vector3(centerX, centerY, 10);
+                            if(rotationString[1] == "Right")
+                            {
+                                enemy.rightDirection = true;
+                            }
+                            else
+                            {
+                                enemy.rightDirection = false;
+                            }
+                            EnemyCornerList.Add(enemy);
+                            layer.Visible = false;
+                        }
+                    }
+
+                    if(entry.Key.StartsWith("EnemyGround"))
+                    {
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            Entities.GroundEnemy enemy = new Entities.GroundEnemy();
+                            enemy.Position = new Vector3(centerX, centerY, 12);
+                            GroundEnemyList.Add(enemy);
+                            layer.Visible = false;
+                        }
+                    }
+
+                    if (entry.Key == "EnemyCollision")
+                    {
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            AddShapes(EntityCollisionShapes, 16, 16, new Vector3(centerX, centerY, 0), true, Color.Red);
+                            layer.Visible = false;
+                        }
+                    }
+
+                    if (entry.Key == "EnemyCollisionGround")
+                    {
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            AddShapes(EnemyCollisionGround, 16, 16, new Vector3(centerX, centerY, 0), true, Color.Red);
+                            layer.Visible = false;
+                        }
+                    }
                 }
             }
         }
@@ -215,51 +328,124 @@ namespace LudumDare29.Screens
 
         private void CollisionActivity()
         {
-            //Player
+
+            //Player Against Tiles
             PlayerInstance.CollideAgainst(TileCollisionShapes, false);
-            //Bullets
-            for (int i = BulletList.Count - 1; i >= 0; i--)
+
+            //Player Bullets
+            for (int bullet = BulletList.Count - 1; bullet >= 0; bullet--)
             {
-                if(BulletList[i].Collision.CollideAgainst(TileCollisionShapes))
+                //Against Tiles
+                if(BulletList[bullet].Collision.CollideAgainst(TileCollisionShapes))
                 {
-                    BulletList[i].Destroy();
+                    BulletList[bullet].Destroy();
                 }
-            }
-            //Next Level
-            for (int x = NextLevelEntityList.Count - 1; x >= 0; x--)
-            {
-                if(PlayerInstance.Collision.CollideAgainst(NextLevelEntityList[x].Collision))
+                else
                 {
-                    SetLevelByName(NextLevelEntityList[x].nextLevelName);
-                }
-            }
-            //Signs
-            for (int z = SignEntityList.Count - 1; z >= 0; z--)
-            {
-                if(PlayerInstance.Collision.CollideAgainst(SignEntityList[z].Collision))
-                {
-                    if(CanOpenMessage())
+                    //Against Corner Enemy
+                    for (int corner = EnemyCornerList.Count - 1; corner >= 0; corner--)
                     {
-                        SignEntityList[z].OpenMessage();
+                        if(BulletList[bullet].Collision.CollideAgainst(EnemyCornerList[corner].Collision))
+                        {
+                            BulletList[bullet].Destroy();
+                            EnemyCornerList[corner].Health -= 10;
+                        }
+                    }
+                    //Should make this seperate, but its not likely to happen.
+                    //Against ground enemy
+                    for (int ground = GroundEnemyList.Count - 1; ground >= 0; ground--)
+                    {
+                        if(BulletList[bullet].Collision.CollideAgainst(GroundEnemyList[ground].Collision))
+                        {
+                            BulletList[bullet].Destroy();
+                            GroundEnemyList[ground].Health -= 15;
+                        }
                     }
                 }
             }
 
-            for (int a = 0; a < ActionEntityList.Count; a++)
+            //Player Against NextLevelEntity
+            for (int next = NextLevelEntityList.Count - 1; next >= 0; next--)
             {
-                if(PlayerInstance.Collision.CollideAgainst(ActionEntityList[a].Collision))
+                if(PlayerInstance.Collision.CollideAgainst(NextLevelEntityList[next].Collision))
                 {
-                    if(ActionEntityList[a].actionString == "takeOffFedora")
+                    SetLevelByName(NextLevelEntityList[next].nextLevelName);
+                }
+            }
+
+            //Player Against Action Entity
+            for (int Action = ActionEntityList.Count - 1; Action >= 0; Action--)
+            {
+                if(PlayerInstance.Collision.CollideAgainst(ActionEntityList[Action].Collision))
+                {
+                    if (ActionEntityList[Action].actionString == "takeOffFedora")
                     {
-                        PlayerInstance.FedoraSprite.Visible = false;
+                        if (CanOpenMessage())
+                        {
+                            PlayerInstance.FedoraSprite.Visible = false;
+                        }
+                        else if (PlayerInstance.FedoraSprite.Visible)
+                        {
+                            PlayerInstance.Collision.CollideAgainstMove(ActionEntityList[Action].Collision, 0, 1);
+                        }
                     }
+                }
+            }
+
+            //Player Against Signs
+            for (int sign = SignEntityList.Count - 1; sign >= 0; sign--)
+            {
+                if(PlayerInstance.Collision.CollideAgainst(SignEntityList[sign].Collision))
+                {
+                    if (CanOpenMessage())
+                    {
+                        SignEntityList[sign].OpenMessage();
+                    }
+                }
+            }
+
+            //Enemy Bullets
+            for (int ebullet = EnemyBulletList.Count - 1; ebullet >= 0; ebullet--)
+            {
+                //Against Player
+                if(PlayerInstance.Collision.CollideAgainst(EnemyBulletList[ebullet].Collision))
+                {
+                    EnemyBulletList[ebullet].Destroy();
+                    GlobalData.PlayerData.health -= 5;
+                }
+                else
+                {
+                    //Against Tiles
+                    if(EnemyBulletList[ebullet].Collision.CollideAgainst(TileCollisionShapes))
+                    {
+                        EnemyBulletList[ebullet].Destroy();
+                    }
+                }
+            }
+
+            //Ground Enemy
+            for (int ground = GroundEnemyList.Count - 1; ground >= 0; ground--)
+            {
+                //Against Tiles
+                GroundEnemyList[ground].Collision.CollideAgainstBounce(EnemyCollisionGround, 0, 1, 0.25f);
+                if (GroundEnemyList[ground].Collision.CollideAgainstBounce(EntityCollisionShapes, 0, 1, 1))
+                {
+                    GroundEnemyList[ground].movementRight = !GroundEnemyList[ground].movementRight;
+                }
+                //Against Player
+                else
+                {
+                    if (GroundEnemyList[ground].Collision.CollideAgainstBounce(PlayerInstance.Collision, 0, 1, 5))
+                    {
+                        GlobalData.PlayerData.health -= 15;
+                    }   
                 }
             }
         }
 
         private void CameraActivity()
         {
-            Camera.Main.Velocity.Y = PlayerInstance.Position.Y - Camera.Main.Position.Y;
+            Camera.Main.Velocity.Y = PlayerInstance.Position.Y - Camera.Main.Position.Y + 100;
             Camera.Main.Velocity.X = PlayerInstance.Position.X - Camera.Main.Position.X;
         }
 

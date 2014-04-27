@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AnimationChainArraySave xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FileRelativeTextures>true</FileRelativeTextures>
+  <TimeMeasurementUnit>Undefined</TimeMeasurementUnit>
+  <CoordinateType>UV</CoordinateType>
+  <AnimationChain>
+    <Name>Bullet</Name>
+    <ColorKey>0</ColorKey>
+    <Frame>
+      <FlipHorizontal>false</FlipHorizontal>
+      <FlipVertical>false</FlipVertical>
+      <TextureName>../../GlobalContent/Textures/enemyTextures.png</TextureName>
+      <FrameLength>0</FrameLength>
+      <LeftCoordinate>0.1640625</LeftCoordinate>
+      <RightCoordinate>0.2109375</RightCoordinate>
+      <TopCoordinate>0.4375</TopCoordinate>
+      <BottomCoordinate>0.5625</BottomCoordinate>
+      <RelativeX>0</RelativeX>
+      <RelativeY>0</RelativeY>
+    </Frame>
+  </AnimationChain>
+  <FileName>C:/Users/Jakub/Documents/FlatRedBallProjects/LudumDare29/LudumDare29/LudumDare29Content/Entities/EnemyBullet/AnimationChainListFile.achx</FileName>
+</AnimationChainArraySave>

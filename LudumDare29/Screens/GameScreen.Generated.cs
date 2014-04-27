@@ -38,8 +38,34 @@ namespace LudumDare29.Screens
 		#if DEBUG
 		static bool HasBeenLoadedWithGlobalContentManager = false;
 		#endif
-		protected static FlatRedBall.TileGraphics.LayeredTileMap StartLevel;
-		protected static FlatRedBall.TileGraphics.LayeredTileMap Level2;
+		static FlatRedBall.TileGraphics.LayeredTileMap mStartLevel;
+		static string mLastContentManagerForStartLevel;
+		public static FlatRedBall.TileGraphics.LayeredTileMap StartLevel
+		{
+			get
+			{
+				if (mStartLevel == null || mLastContentManagerForStartLevel != "GameScreen")
+				{
+					mLastContentManagerForStartLevel = "GameScreen";
+					mStartLevel = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/startlevel.tilb", "GameScreen");
+				}
+				return mStartLevel;
+			}
+		}
+		static FlatRedBall.TileGraphics.LayeredTileMap mLevel2;
+		static string mLastContentManagerForLevel2;
+		public static FlatRedBall.TileGraphics.LayeredTileMap Level2
+		{
+			get
+			{
+				if (mLevel2 == null || mLastContentManagerForLevel2 != "GameScreen")
+				{
+					mLastContentManagerForLevel2 = "GameScreen";
+					mLevel2 = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/level2.tilb", "GameScreen");
+				}
+				return mLevel2;
+			}
+		}
 		
 		private FlatRedBall.TileGraphics.LayeredTileMap TiledMap;
 		private FlatRedBall.Math.Geometry.ShapeCollection TileCollisionShapes;
@@ -48,6 +74,11 @@ namespace LudumDare29.Screens
 		private LudumDare29.Entities.Player PlayerInstance;
 		private PositionedObjectList<LudumDare29.Entities.SignEntity> SignEntityList;
 		private PositionedObjectList<LudumDare29.Entities.ActionEntity> ActionEntityList;
+		private PositionedObjectList<LudumDare29.Entities.EnemyBullet> EnemyBulletList;
+		private PositionedObjectList<LudumDare29.Entities.EnemyCorner> EnemyCornerList;
+		private PositionedObjectList<LudumDare29.Entities.GroundEnemy> GroundEnemyList;
+		private FlatRedBall.Math.Geometry.ShapeCollection EntityCollisionShapes;
+		private FlatRedBall.Math.Geometry.ShapeCollection EnemyCollisionGround;
 
 		public GameScreen()
 			: base("GameScreen")
@@ -72,6 +103,16 @@ namespace LudumDare29.Screens
 			SignEntityList.Name = "SignEntityList";
 			ActionEntityList = new PositionedObjectList<LudumDare29.Entities.ActionEntity>();
 			ActionEntityList.Name = "ActionEntityList";
+			EnemyBulletList = new PositionedObjectList<LudumDare29.Entities.EnemyBullet>();
+			EnemyBulletList.Name = "EnemyBulletList";
+			EnemyCornerList = new PositionedObjectList<LudumDare29.Entities.EnemyCorner>();
+			EnemyCornerList.Name = "EnemyCornerList";
+			GroundEnemyList = new PositionedObjectList<LudumDare29.Entities.GroundEnemy>();
+			GroundEnemyList.Name = "GroundEnemyList";
+			EntityCollisionShapes = new FlatRedBall.Math.Geometry.ShapeCollection();
+			EntityCollisionShapes.Name = "EntityCollisionShapes";
+			EnemyCollisionGround = new FlatRedBall.Math.Geometry.ShapeCollection();
+			EnemyCollisionGround.Name = "EnemyCollisionGround";
 			
 			
 			PostInitialize();
@@ -87,8 +128,12 @@ namespace LudumDare29.Screens
 		public override void AddToManagers ()
 		{
 			BulletFactory.Initialize(BulletList, ContentManagerName);
+			EnemyBulletFactory.Initialize(EnemyBulletList, ContentManagerName);
+			TiledMap.AddToManagers();
 			TileCollisionShapes.AddToManagers();
 			PlayerInstance.AddToManagers(mLayer);
+			EntityCollisionShapes.AddToManagers();
+			EnemyCollisionGround.AddToManagers();
 			base.AddToManagers();
 			AddToManagersBottomUp();
 			CustomInitialize();
@@ -134,6 +179,30 @@ namespace LudumDare29.Screens
 						ActionEntityList[i].Activity();
 					}
 				}
+				for (int i = EnemyBulletList.Count - 1; i > -1; i--)
+				{
+					if (i < EnemyBulletList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						EnemyBulletList[i].Activity();
+					}
+				}
+				for (int i = EnemyCornerList.Count - 1; i > -1; i--)
+				{
+					if (i < EnemyCornerList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						EnemyCornerList[i].Activity();
+					}
+				}
+				for (int i = GroundEnemyList.Count - 1; i > -1; i--)
+				{
+					if (i < GroundEnemyList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						GroundEnemyList[i].Activity();
+					}
+				}
 			}
 			else
 			{
@@ -154,15 +223,29 @@ namespace LudumDare29.Screens
 		{
 			// Generated Destroy
 			BulletFactory.Destroy();
-			StartLevel.Destroy();
-			StartLevel = null;
-			Level2.Destroy();
-			Level2 = null;
+			EnemyBulletFactory.Destroy();
+			if (mStartLevel != null)
+			{
+				mStartLevel.Destroy();
+				mStartLevel = null;
+			}
+			if (mLevel2 != null)
+			{
+				mLevel2.Destroy();
+				mLevel2 = null;
+			}
 			
 			BulletList.MakeOneWay();
 			NextLevelEntityList.MakeOneWay();
 			SignEntityList.MakeOneWay();
 			ActionEntityList.MakeOneWay();
+			EnemyBulletList.MakeOneWay();
+			EnemyCornerList.MakeOneWay();
+			GroundEnemyList.MakeOneWay();
+			if (TiledMap != null)
+			{
+				TiledMap.Destroy();
+			}
 			if (TileCollisionShapes != null)
 			{
 				TileCollisionShapes.RemoveFromManagers(ContentManagerName != "Global");
@@ -188,10 +271,33 @@ namespace LudumDare29.Screens
 			{
 				ActionEntityList[i].Destroy();
 			}
+			for (int i = EnemyBulletList.Count - 1; i > -1; i--)
+			{
+				EnemyBulletList[i].Destroy();
+			}
+			for (int i = EnemyCornerList.Count - 1; i > -1; i--)
+			{
+				EnemyCornerList[i].Destroy();
+			}
+			for (int i = GroundEnemyList.Count - 1; i > -1; i--)
+			{
+				GroundEnemyList[i].Destroy();
+			}
+			if (EntityCollisionShapes != null)
+			{
+				EntityCollisionShapes.RemoveFromManagers(ContentManagerName != "Global");
+			}
+			if (EnemyCollisionGround != null)
+			{
+				EnemyCollisionGround.RemoveFromManagers(ContentManagerName != "Global");
+			}
 			BulletList.MakeTwoWay();
 			NextLevelEntityList.MakeTwoWay();
 			SignEntityList.MakeTwoWay();
 			ActionEntityList.MakeTwoWay();
+			EnemyBulletList.MakeTwoWay();
+			EnemyCornerList.MakeTwoWay();
+			GroundEnemyList.MakeTwoWay();
 
 			base.Destroy();
 
@@ -213,6 +319,10 @@ namespace LudumDare29.Screens
 		}
 		public virtual void RemoveFromManagers ()
 		{
+			if (TiledMap != null)
+			{
+				TiledMap.Destroy();
+			}
 			if (TileCollisionShapes != null)
 			{
 				TileCollisionShapes.RemoveFromManagers(false);
@@ -233,6 +343,26 @@ namespace LudumDare29.Screens
 			for (int i = ActionEntityList.Count - 1; i > -1; i--)
 			{
 				ActionEntityList[i].Destroy();
+			}
+			for (int i = EnemyBulletList.Count - 1; i > -1; i--)
+			{
+				EnemyBulletList[i].Destroy();
+			}
+			for (int i = EnemyCornerList.Count - 1; i > -1; i--)
+			{
+				EnemyCornerList[i].Destroy();
+			}
+			for (int i = GroundEnemyList.Count - 1; i > -1; i--)
+			{
+				GroundEnemyList[i].Destroy();
+			}
+			if (EntityCollisionShapes != null)
+			{
+				EntityCollisionShapes.RemoveFromManagers(false);
+			}
+			if (EnemyCollisionGround != null)
+			{
+				EnemyCollisionGround.RemoveFromManagers(false);
 			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
@@ -261,6 +391,18 @@ namespace LudumDare29.Screens
 			{
 				ActionEntityList[i].ConvertToManuallyUpdated();
 			}
+			for (int i = 0; i < EnemyBulletList.Count; i++)
+			{
+				EnemyBulletList[i].ConvertToManuallyUpdated();
+			}
+			for (int i = 0; i < EnemyCornerList.Count; i++)
+			{
+				EnemyCornerList[i].ConvertToManuallyUpdated();
+			}
+			for (int i = 0; i < GroundEnemyList.Count; i++)
+			{
+				GroundEnemyList[i].ConvertToManuallyUpdated();
+			}
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{
@@ -278,14 +420,6 @@ namespace LudumDare29.Screens
 				throw new Exception("This type has been loaded with a Global content manager, then loaded with a non-global.  This can lead to a lot of bugs");
 			}
 			#endif
-			if (!FlatRedBallServices.IsLoaded<FlatRedBall.TileGraphics.LayeredTileMap>(@"content/screens/gamescreen/startlevel.tilb", contentManagerName))
-			{
-			}
-			StartLevel = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/startlevel.tilb", contentManagerName);
-			if (!FlatRedBallServices.IsLoaded<FlatRedBall.TileGraphics.LayeredTileMap>(@"content/screens/gamescreen/level2.tilb", contentManagerName))
-			{
-			}
-			Level2 = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/level2.tilb", contentManagerName);
 			LudumDare29.Entities.Player.LoadStaticContent(contentManagerName);
 			CustomLoadStaticContent(contentManagerName);
 		}

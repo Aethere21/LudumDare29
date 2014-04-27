@@ -29,7 +29,7 @@ namespace LudumDare29.Entities
 	public partial class Bullet
 	{
         public bool rightDirection;
-        private float movementSpeed = 350;
+        private float movementSpeed = 450;
 		private void CustomInitialize()
 		{
 
@@ -49,7 +49,7 @@ namespace LudumDare29.Entities
 
 		private void CustomDestroy()
 		{
-
+            Collision.RemoveSelfFromListsBelongingTo();
 
 		}
 

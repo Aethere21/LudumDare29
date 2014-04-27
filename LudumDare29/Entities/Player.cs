@@ -59,17 +59,6 @@ namespace LudumDare29.Entities
             MovementAnimations();
 
             ShootingActivity();
-
-            FlatRedBall.Debugging.Debugger.Write(FedoraSprite.RelativePosition);
-
-            if(InputManager.Keyboard.KeyReleased(Keys.J))
-            {
-                FedoraSprite.RelativePosition.Y++;
-            }
-            if (InputManager.Keyboard.KeyReleased(Keys.H))
-            {
-                FedoraSprite.RelativePosition.Y--;
-            }
 		}
 
 		private void CustomDestroy()

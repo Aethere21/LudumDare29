@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using FlatRedBall.Math.Geometry;
+using FlatRedBall.Graphics.Animation;
 
 #if XNA4 || WINDOWS_8
 using Color = Microsoft.Xna.Framework.Color;
@@ -35,7 +36,7 @@ using Model = Microsoft.Xna.Framework.Graphics.Model;
 
 namespace LudumDare29.Entities
 {
-	public partial class ActionEntity : PositionedObject, IDestroyable
+	public partial class EnemyCorner : PositionedObject, IDestroyable
 	{
         // This is made global so that static lazy-loaded content can access it.
         public static string ContentManagerName
@@ -51,6 +52,7 @@ namespace LudumDare29.Entities
 		static object mLockObject = new object();
 		static List<string> mRegisteredUnloads = new List<string>();
 		static List<string> LoadedContentManagers = new List<string>();
+		protected static FlatRedBall.Graphics.Animation.AnimationChainList AnimationChainListFile;
 		
 		private FlatRedBall.Math.Geometry.AxisAlignedRectangle mCollision;
 		public FlatRedBall.Math.Geometry.AxisAlignedRectangle Collision
@@ -64,21 +66,34 @@ namespace LudumDare29.Entities
 				mCollision = value;
 			}
 		}
+		private FlatRedBall.Sprite SpriteInstance;
+		private FlatRedBall.Math.Geometry.AxisAlignedRectangle mBulletPosRect;
+		public FlatRedBall.Math.Geometry.AxisAlignedRectangle BulletPosRect
+		{
+			get
+			{
+				return mBulletPosRect;
+			}
+			private set
+			{
+				mBulletPosRect = value;
+			}
+		}
 		protected Layer LayerProvidedByContainer = null;
 
-        public ActionEntity()
+        public EnemyCorner()
             : this(FlatRedBall.Screens.ScreenManager.CurrentScreen.ContentManagerName, true)
         {
 
         }
 
-        public ActionEntity(string contentManagerName) :
+        public EnemyCorner(string contentManagerName) :
             this(contentManagerName, true)
         {
         }
 
 
-        public ActionEntity(string contentManagerName, bool addToManagers) :
+        public EnemyCorner(string contentManagerName, bool addToManagers) :
 			base()
 		{
 			// Don't delete this:
@@ -93,6 +108,10 @@ namespace LudumDare29.Entities
 			LoadStaticContent(ContentManagerName);
 			mCollision = new FlatRedBall.Math.Geometry.AxisAlignedRectangle();
 			mCollision.Name = "mCollision";
+			SpriteInstance = new FlatRedBall.Sprite();
+			SpriteInstance.Name = "SpriteInstance";
+			mBulletPosRect = new FlatRedBall.Math.Geometry.AxisAlignedRectangle();
+			mBulletPosRect.Name = "mBulletPosRect";
 			
 			PostInitialize();
 			if (addToManagers)
@@ -109,12 +128,16 @@ namespace LudumDare29.Entities
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddPositionedObject(this);
 			ShapeManager.AddToLayer(mCollision, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
+			ShapeManager.AddToLayer(mBulletPosRect, LayerProvidedByContainer);
 		}
 		public virtual void AddToManagers (Layer layerToAddTo)
 		{
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddPositionedObject(this);
 			ShapeManager.AddToLayer(mCollision, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
+			ShapeManager.AddToLayer(mBulletPosRect, LayerProvidedByContainer);
 			AddToManagersBottomUp(layerToAddTo);
 			CustomInitialize();
 		}
@@ -137,6 +160,14 @@ namespace LudumDare29.Entities
 			{
 				ShapeManager.Remove(Collision);
 			}
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSprite(SpriteInstance);
+			}
+			if (BulletPosRect != null)
+			{
+				ShapeManager.Remove(BulletPosRect);
+			}
 
 
 			CustomDestroy();
@@ -152,10 +183,24 @@ namespace LudumDare29.Entities
 				mCollision.CopyAbsoluteToRelative();
 				mCollision.AttachTo(this, false);
 			}
-			Collision.Color = Color.Red;
-			Collision.Height = 200f;
-			Collision.Visible = true;
 			Collision.Width = 32f;
+			Collision.Height = 32f;
+			Collision.Visible = true;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.CopyAbsoluteToRelative();
+				SpriteInstance.AttachTo(this, false);
+			}
+			SpriteInstance.TextureScale = 2f;
+			SpriteInstance.AnimationChains = AnimationChainListFile;
+			SpriteInstance.CurrentChainName = "Enemy";
+			if (mBulletPosRect.Parent == null)
+			{
+				mBulletPosRect.CopyAbsoluteToRelative();
+				mBulletPosRect.AttachTo(this, false);
+			}
+			BulletPosRect.Width = 5f;
+			BulletPosRect.Height = 5f;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp (Layer layerToAddTo)
@@ -169,21 +214,34 @@ namespace LudumDare29.Entities
 			{
 				ShapeManager.RemoveOneWay(Collision);
 			}
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(SpriteInstance);
+			}
+			if (BulletPosRect != null)
+			{
+				ShapeManager.RemoveOneWay(BulletPosRect);
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
 			if (callOnContainedElements)
 			{
 			}
-			mCollision.Color = Color.Red;
-			mCollision.Height = 200f;
-			mCollision.Visible = true;
 			mCollision.Width = 32f;
+			mCollision.Height = 32f;
+			mCollision.Visible = true;
+			SpriteInstance.TextureScale = 2f;
+			SpriteInstance.AnimationChains = AnimationChainListFile;
+			SpriteInstance.CurrentChainName = "Enemy";
+			mBulletPosRect.Width = 5f;
+			mBulletPosRect.Height = 5f;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
 			this.ForceUpdateDependenciesDeep();
 			SpriteManager.ConvertToManuallyUpdated(this);
+			SpriteManager.ConvertToManuallyUpdated(SpriteInstance);
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{
@@ -210,10 +268,15 @@ namespace LudumDare29.Entities
 				{
 					if (!mRegisteredUnloads.Contains(ContentManagerName) && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 					{
-						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("ActionEntityStaticUnload", UnloadStaticContent);
+						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("EnemyCornerStaticUnload", UnloadStaticContent);
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
+				if (!FlatRedBallServices.IsLoaded<FlatRedBall.Graphics.Animation.AnimationChainList>(@"content/entities/enemycorner/animationchainlistfile.achx", ContentManagerName))
+				{
+					registerUnload = true;
+				}
+				AnimationChainListFile = FlatRedBallServices.Load<FlatRedBall.Graphics.Animation.AnimationChainList>(@"content/entities/enemycorner/animationchainlistfile.achx", ContentManagerName);
 			}
 			if (registerUnload && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 			{
@@ -221,7 +284,7 @@ namespace LudumDare29.Entities
 				{
 					if (!mRegisteredUnloads.Contains(ContentManagerName) && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 					{
-						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("ActionEntityStaticUnload", UnloadStaticContent);
+						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("EnemyCornerStaticUnload", UnloadStaticContent);
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
@@ -237,19 +300,38 @@ namespace LudumDare29.Entities
 			}
 			if (LoadedContentManagers.Count == 0)
 			{
+				if (AnimationChainListFile != null)
+				{
+					AnimationChainListFile= null;
+				}
 			}
 		}
 		[System.Obsolete("Use GetFile instead")]
 		public static object GetStaticMember (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "AnimationChainListFile":
+					return AnimationChainListFile;
+			}
 			return null;
 		}
 		public static object GetFile (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "AnimationChainListFile":
+					return AnimationChainListFile;
+			}
 			return null;
 		}
 		object GetMember (string memberName)
 		{
+			switch(memberName)
+			{
+				case  "AnimationChainListFile":
+					return AnimationChainListFile;
+			}
 			return null;
 		}
 		protected bool mIsPaused;
@@ -262,9 +344,16 @@ namespace LudumDare29.Entities
 		{
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(this);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(Collision);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(SpriteInstance);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(BulletPosRect);
 		}
 		public virtual void MoveToLayer (Layer layerToMoveTo)
 		{
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(SpriteInstance);
+			}
+			SpriteManager.AddToLayer(SpriteInstance, layerToMoveTo);
 			LayerProvidedByContainer = layerToMoveTo;
 		}
 

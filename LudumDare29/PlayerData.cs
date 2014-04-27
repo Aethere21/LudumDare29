@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace LudumDare29
 {
@@ -15,5 +16,7 @@ namespace LudumDare29
         public int playerDefense;
 
         public bool FedoraOnHead;
+
+        public Vector2 playerPos;
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="100" height="35" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="80" height="50" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="MainTileset" tilewidth="32" tileheight="32">
   <image source="../../../../../../../Desktop/Ludum Dare/MainTileset.png" trans="ffffff" width="1024" height="1024"/>
   <tile id="1">
@@ -9,28 +9,48 @@
   </tile>
   <tile id="99">
    <properties>
-    <property name="Name" value="SpawnPos"/>
+    <property name="Name" value="StartPos"/>
+   </properties>
+  </tile>
+  <tile id="100">
+   <properties>
+    <property name="Name" value="EnemyCorner_Right"/>
+   </properties>
+  </tile>
+  <tile id="101">
+   <properties>
+    <property name="Name" value="EnemyGround"/>
+   </properties>
+  </tile>
+  <tile id="102">
+   <properties>
+    <property name="Name" value="EnemyCorner_Left"/>
+   </properties>
+  </tile>
+  <tile id="132">
+   <properties>
+    <property name="Name" value="Sign_You have to go find your fedora! Let noon stop you!"/>
+   </properties>
+  </tile>
+  <tile id="162">
+   <properties>
+    <property name="Name" value="EnemyCollision"/>
+   </properties>
+  </tile>
+  <tile id="163">
+   <properties>
+    <property name="Name" value="EnemyCollisionGround"/>
    </properties>
   </tile>
  </tileset>
- <layer name="Main" width="100" height="35">
+ <layer name="Main" width="80" height="50" opacity="0.9">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3RCwmAABTAQP9Yw/4lfbaYcAdLsGUBAAAAAAAAAACA/1unTYn26ZhOJbr8SOVHKz9a+dHKj1Z+tPKj1ffjmW5legGHKS0msDYAAA==
+   H4sIAAAAAAAAC+3YywrCMBBG4SD1/V9ZXLjReuuvmQx8B86q0DSHLKYZAwAAAL/gFIjnvOujX4Z+Gfpl6JehX8bsfsmcMMMj+5nJ7TvPC9qh3zbqO73q920P/Zw//dbwvsUnbfRz/mb123te0a96xus8/22T17uS7HG1+6tu/SrfvUdFv3+yUr+qe/JkrZX6dUS/DP0y3P/1svofgyRJkiRJkiRJPnoBvsDK84A+AAA=
   </data>
  </layer>
- <layer name="Other" width="100" height="35">
+ <layer name="Invisible" width="80" height="50">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3RwQ2AIAwFUHYDNnH/GYyJXIwHqwgxvpf0VvqbkhIAAAAAAACMs8xeAAAA+IXacVZ+mJUv9Bz7tyrBd1F1z2hZX9Fj1+iMt+9TToq5/AEAANy3Ah0TBaSwNgAA
-  </data>
- </layer>
- <layer name="Invisible" width="100" height="35">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3BMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAADgN2YIZcmwNgAA
-  </data>
- </layer>
- <layer name="Invisible2" width="100" height="35">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3BMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAADgN2YIZcmwNgAA
+   H4sIAAAAAAAAC+3YSQrAIAwAwD62y0v6kvahpQfvQkLVOgNeXEADBpJlAQCAPm3BdSBur5yDiKvx+dHdCQMAAGZWekxH01vkWyv3qfNzzF6bQg/KPzyb3mJcX+exv+XN9z0ZfbqZe3riFyN+AAAAAABkewCKDA3+gD4AAA==
   </data>
  </layer>
 </map>

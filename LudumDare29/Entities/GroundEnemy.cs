@@ -26,26 +26,41 @@ using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
 
 namespace LudumDare29.Entities
 {
-	public partial class ActionEntity
+	public partial class GroundEnemy
 	{
 
-        public string actionString;
+        public bool movementRight = true;
+
+        public int Health;
 
 		private void CustomInitialize()
 		{
 
+            Health = 100;
 
 		}
 
 		private void CustomActivity()
 		{
+            this.YVelocity = -85;
+            if (this.movementRight)
+            {
+                this.Velocity.X = 100;
+            }
+            else
+            {
+                this.Velocity.X = -100;
+            }
 
+            if(this.Health <= 0)
+            {
+                this.Destroy();
+            }
 
 		}
 
 		private void CustomDestroy()
 		{
-            Collision.RemoveSelfFromListsBelongingTo();
 
 
 		}

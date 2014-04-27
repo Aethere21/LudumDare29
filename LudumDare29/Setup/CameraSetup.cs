@@ -14,7 +14,11 @@ namespace LudumDare29
 	{
 			internal static void SetupCamera (Camera cameraToSetUp, GraphicsDeviceManager graphicsDeviceManager)
 			{
-				cameraToSetUp.UsePixelCoordinates(false, 550, 350);
+				FlatRedBallServices.GraphicsOptions.SetResolution(1280, 800);
+				#if WINDOWS_PHONE || WINDOWS_8 || IOS || ANDROID
+				graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+				#endif
+				cameraToSetUp.UsePixelCoordinates(false, 1000, 600);
 			}
 			internal static void ResetCamera (Camera cameraToReset)
 			{

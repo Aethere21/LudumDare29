@@ -46,6 +46,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>BulletTexture</Name>
     </None>
+    <None Include="Entities\EnemyBullet\AnimationChainListFile.achx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>AnimationChainListFile</Name>
+    </None>
+    <None Include="Entities\EnemyCorner\AnimationChainListFile.achx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>AnimationChainListFile</Name>
+    </None>
+    <None Include="Entities\GroundEnemy\AnimationChainListFile.achx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>AnimationChainListFile</Name>
+    </None>
     <None Include="Entities\PlatformerCharacterBase\MovementValues.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>MovementValues</Name>
@@ -77,6 +89,10 @@
     <None Include="Entities\SignEntity\MessageTexture.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>MessageTexture</Name>
+    </None>
+    <None Include="GlobalContent\Textures\enemyTextures.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>enemyTextures</Name>
     </None>
     <None Include="Screens\GameScreen\Level2.tilb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AnimationChainArraySave xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FileRelativeTextures>true</FileRelativeTextures>
+  <TimeMeasurementUnit>Undefined</TimeMeasurementUnit>
+  <CoordinateType>UV</CoordinateType>
+  <AnimationChain>
+    <Name>Enemy</Name>
+    <ColorKey>0</ColorKey>
+    <Frame>
+      <FlipHorizontal>false</FlipHorizontal>
+      <FlipVertical>false</FlipVertical>
+      <TextureName>../../GlobalContent/Textures/enemyTextures.png</TextureName>
+      <FrameLength>0</FrameLength>
+      <LeftCoordinate>0.25</LeftCoordinate>
+      <RightCoordinate>0.375</RightCoordinate>
+      <TopCoordinate>0</TopCoordinate>
+      <BottomCoordinate>1</BottomCoordinate>
+      <RelativeX>0</RelativeX>
+      <RelativeY>0</RelativeY>
+    </Frame>
+  </AnimationChain>
+  <FileName>C:/Users/Jakub/Documents/FlatRedBallProjects/LudumDare29/LudumDare29/LudumDare29Content/Entities/GroundEnemy/AnimationChainListFile.achx</FileName>
+</AnimationChainArraySave>

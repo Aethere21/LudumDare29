@@ -45,6 +45,7 @@ namespace LudumDare29.Entities
 
 		private void CustomDestroy()
 		{
+            Collision.RemoveSelfFromListsBelongingTo();
 
 
 		}
