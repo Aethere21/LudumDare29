@@ -54,9 +54,29 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>AnimationChainListFile</Name>
     </None>
+    <None Include="Entities\Player\Fedora.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>Fedora</Name>
+    </None>
     <None Include="Entities\Player\PlayerTexture.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>PlayerTexture</Name>
+    </None>
+    <None Include="Entities\SignEntity\MazetechFont.fnt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MazetechFont</Name>
+    </None>
+    <None Include="Entities\SignEntity\MazetechFont_0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MazetechFont_0</Name>
+    </None>
+    <None Include="Entities\SignEntity\MazetechFont_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MazetechFont_1</Name>
+    </None>
+    <None Include="Entities\SignEntity\MessageTexture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>MessageTexture</Name>
     </None>
     <None Include="Screens\GameScreen\Level2.tilb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -170,14 +170,15 @@ namespace LudumDare29.Entities
 				mCollision.CopyAbsoluteToRelative();
 				mCollision.AttachTo(this, false);
 			}
-			Collision.Width = 2.5f;
 			Collision.Height = 6f;
 			Collision.Visible = false;
+			Collision.Width = 2.5f;
 			if (SpriteInstance.Parent == null)
 			{
 				SpriteInstance.CopyAbsoluteToRelative();
 				SpriteInstance.AttachTo(this, false);
 			}
+			SpriteInstance.Texture = BulletTexture;
 			SpriteInstance.TextureScale = 0.5f;
 			if (SpriteInstance.Parent == null)
 			{
@@ -187,7 +188,6 @@ namespace LudumDare29.Entities
 			{
 				SpriteInstance.RelativeZ = 8f;
 			}
-			SpriteInstance.Texture = BulletTexture;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp (Layer layerToAddTo)
@@ -211,9 +211,10 @@ namespace LudumDare29.Entities
 			if (callOnContainedElements)
 			{
 			}
-			mCollision.Width = 2.5f;
 			mCollision.Height = 6f;
 			mCollision.Visible = false;
+			mCollision.Width = 2.5f;
+			SpriteInstance.Texture = BulletTexture;
 			SpriteInstance.TextureScale = 0.5f;
 			if (SpriteInstance.Parent == null)
 			{
@@ -223,7 +224,6 @@ namespace LudumDare29.Entities
 			{
 				SpriteInstance.RelativeZ = 8f;
 			}
-			SpriteInstance.Texture = BulletTexture;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{

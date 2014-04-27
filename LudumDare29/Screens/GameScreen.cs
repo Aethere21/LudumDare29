@@ -32,7 +32,6 @@ namespace LudumDare29.Screens
 {
 	public partial class GameScreen
 	{
-
 		void CustomInitialize()
 		{
             TileCollisionShapes.Visible = true;
@@ -68,9 +67,30 @@ namespace LudumDare29.Screens
         {
             TiledMap.RemoveFromManagersOneWay();
             RemoveShapes(TileCollisionShapes);
+            ClearList();
             TiledMap = (LayeredTileMap)GetMember(name);
             TiledMap.AddToManagers();
             SetUpTiles();
+        }
+
+        public void ClearList()
+        {
+            for (int i = NextLevelEntityList.Count - 1; i >= 0; i--)
+            {
+                NextLevelEntityList[i].Destroy();
+            }
+            for (int x = ActionEntityList.Count - 1; x >= 0; x--)
+            {
+                ActionEntityList[x].Destroy();
+            }
+            for (int z = ActionEntityList.Count - 1; z >= 0; z--)
+            {
+                BulletList[z].Destroy();
+            }
+            for (int y = ActionEntityList.Count - 1; y >= 0; y--)
+            {
+                SignEntityList[y].Destroy();
+            }
         }
 
         private void SetUpTiles()
@@ -130,6 +150,48 @@ namespace LudumDare29.Screens
                             NextLevelEntityList.Add(nextLevel);
                         }
                     }
+
+                    if(entry.Key.StartsWith("Sign_"))
+                    {
+                        string[] signMessage = entry.Key.Split(splitters, StringSplitOptions.None);
+
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            Entities.SignEntity sign = new Entities.SignEntity();
+                            sign.Position = new Vector3(centerX, centerY, 20);
+                            sign.signMessage = signMessage[1];
+                            SignEntityList.Add(sign);
+                        }
+                    }
+
+                    if (entry.Key.StartsWith("Action_"))
+                    {
+                        string[] actionString = entry.Key.Split(splitters, StringSplitOptions.None);
+
+                        List<int> indexes = entry.Value;
+                        foreach (int index in indexes)
+                        {
+                            float left;
+                            float bottom;
+                            layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
+                            float centerX = left + tileSize;
+                            float centerY = bottom + tileSize;
+
+                            Entities.ActionEntity action = new Entities.ActionEntity();
+                            action.Position = new Vector3(centerX, centerY, 0);
+                            action.actionString = actionString[1];
+                            ActionEntityList.Add(action);
+
+                            layer.Visible = false;
+                        }
+                    }
                 }
             }
         }
@@ -153,7 +215,9 @@ namespace LudumDare29.Screens
 
         private void CollisionActivity()
         {
+            //Player
             PlayerInstance.CollideAgainst(TileCollisionShapes, false);
+            //Bullets
             for (int i = BulletList.Count - 1; i >= 0; i--)
             {
                 if(BulletList[i].Collision.CollideAgainst(TileCollisionShapes))
@@ -161,13 +225,34 @@ namespace LudumDare29.Screens
                     BulletList[i].Destroy();
                 }
             }
-
+            //Next Level
             for (int x = NextLevelEntityList.Count - 1; x >= 0; x--)
             {
                 if(PlayerInstance.Collision.CollideAgainst(NextLevelEntityList[x].Collision))
                 {
                     SetLevelByName(NextLevelEntityList[x].nextLevelName);
-                    //Console.WriteLine("Collided!");
+                }
+            }
+            //Signs
+            for (int z = SignEntityList.Count - 1; z >= 0; z--)
+            {
+                if(PlayerInstance.Collision.CollideAgainst(SignEntityList[z].Collision))
+                {
+                    if(CanOpenMessage())
+                    {
+                        SignEntityList[z].OpenMessage();
+                    }
+                }
+            }
+
+            for (int a = 0; a < ActionEntityList.Count; a++)
+            {
+                if(PlayerInstance.Collision.CollideAgainst(ActionEntityList[a].Collision))
+                {
+                    if(ActionEntityList[a].actionString == "takeOffFedora")
+                    {
+                        PlayerInstance.FedoraSprite.Visible = false;
+                    }
                 }
             }
         }
@@ -176,6 +261,18 @@ namespace LudumDare29.Screens
         {
             Camera.Main.Velocity.Y = PlayerInstance.Position.Y - Camera.Main.Position.Y;
             Camera.Main.Velocity.X = PlayerInstance.Position.X - Camera.Main.Position.X;
+        }
+
+        private bool CanOpenMessage()
+        {
+            for (int i = 0; i < SignEntityList.Count; i++)
+            {
+                if(SignEntityList[i].messageOpen)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 	}
 }

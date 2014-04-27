@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="100" height="35" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="MainTileset" tilewidth="32" tileheight="32">
   <image source="../../../../../../../Desktop/Ludum Dare/MainTileset.png" trans="ffffff" width="1024" height="1024"/>
   <tile id="1">
@@ -13,9 +13,24 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Tile Layer 1" width="50" height="50">
+ <layer name="Main" width="100" height="35">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3QwQkAIAwEwait2n8NsYD4EyQwA/s/LgIAAAAAAKC2fw8AuBin2bz1/BUAABKJeQDHECcAAA==
+   H4sIAAAAAAAAC+3RCwmAABTAQP9Yw/4lfbaYcAdLsGUBAAAAAAAAAACA/1unTYn26ZhOJbr8SOVHKz9a+dHKj1Z+tPKj1ffjmW5legGHKS0msDYAAA==
+  </data>
+ </layer>
+ <layer name="Other" width="100" height="35">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3RwQ2AIAwFUHYDNnH/GYyJXIwHqwgxvpf0VvqbkhIAAAAAAACMs8xeAAAA+IXacVZ+mJUv9Bz7tyrBd1F1z2hZX9Fj1+iMt+9TToq5/AEAANy3Ah0TBaSwNgAA
+  </data>
+ </layer>
+ <layer name="Invisible" width="100" height="35">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAADgN2YIZcmwNgAA
+  </data>
+ </layer>
+ <layer name="Invisible2" width="100" height="35">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BMQEAAADCoPVPbQhfoAAAAAAAAAAAAAAAAADgN2YIZcmwNgAA
   </data>
  </layer>
 </map>

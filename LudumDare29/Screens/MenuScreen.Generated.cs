@@ -20,6 +20,7 @@ using Microsoft.Xna.Framework.Media;
 
 // Generated Usings
 using LudumDare29.Entities;
+using LudumDare29.Factories;
 using FlatRedBall;
 using FlatRedBall.Screens;
 using System;

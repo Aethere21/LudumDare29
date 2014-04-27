@@ -26,26 +26,22 @@ using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
 
 namespace LudumDare29.Entities
 {
-	public partial class Bullet
+	public partial class ActionEntity
 	{
-        public bool rightDirection;
-        private float movementSpeed = 350;
+
+        public string actionString;
+
 		private void CustomInitialize()
 		{
 
+
 		}
 
-        private void CustomActivity()
-        {
-            if(rightDirection)
-            {
-                this.Velocity = RotationMatrix.Left * movementSpeed;
-            }
-            else
-            {
-                this.Velocity = RotationMatrix.Right * movementSpeed;
-            }
-        }
+		private void CustomActivity()
+		{
+
+
+		}
 
 		private void CustomDestroy()
 		{

@@ -13,9 +13,8 @@ using FlatRedBall.Screens;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LudumDare29.DataTypes;
-using FlatRedBall.IO.Csv;
 using FlatRedBall.Math.Geometry;
+using Microsoft.Xna.Framework.Graphics;
 
 #if XNA4 || WINDOWS_8
 using Color = Microsoft.Xna.Framework.Color;
@@ -37,7 +36,7 @@ using Model = Microsoft.Xna.Framework.Graphics.Model;
 
 namespace LudumDare29.Entities
 {
-	public partial class PlatformerCharacterBase : PositionedObject, IDestroyable
+	public partial class SignEntity : PositionedObject, IDestroyable
 	{
         // This is made global so that static lazy-loaded content can access it.
         public static string ContentManagerName
@@ -53,9 +52,14 @@ namespace LudumDare29.Entities
 		static object mLockObject = new object();
 		static List<string> mRegisteredUnloads = new List<string>();
 		static List<string> LoadedContentManagers = new List<string>();
-		public static Dictionary<string, MovementValues> MovementValues;
+		protected static Microsoft.Xna.Framework.Graphics.Texture2D MazetechFont_1;
+		protected static FlatRedBall.Graphics.BitmapFont MazetechFont;
+		protected static Microsoft.Xna.Framework.Graphics.Texture2D MazetechFont_0;
+		protected static Microsoft.Xna.Framework.Graphics.Texture2D MessageTexture;
 		
-		protected FlatRedBall.Math.Geometry.AxisAlignedRectangle mCollision;
+		private FlatRedBall.Graphics.Text TextInstance;
+		private FlatRedBall.Sprite SpriteInstance;
+		private FlatRedBall.Math.Geometry.AxisAlignedRectangle mCollision;
 		public FlatRedBall.Math.Geometry.AxisAlignedRectangle Collision
 		{
 			get
@@ -67,87 +71,21 @@ namespace LudumDare29.Entities
 				mCollision = value;
 			}
 		}
-		public event EventHandler BeforeGroundMovementSet;
-		public event EventHandler AfterGroundMovementSet;
-		LudumDare29.DataTypes.MovementValues mGroundMovement;
-		public virtual LudumDare29.DataTypes.MovementValues GroundMovement
-		{
-			set
-			{
-				if (BeforeGroundMovementSet != null)
-				{
-					BeforeGroundMovementSet(this, null);
-				}
-				mGroundMovement = value;
-				if (AfterGroundMovementSet != null)
-				{
-					AfterGroundMovementSet(this, null);
-				}
-			}
-			get
-			{
-				return mGroundMovement;
-			}
-		}
-		public event EventHandler BeforeAirMovementSet;
-		public event EventHandler AfterAirMovementSet;
-		LudumDare29.DataTypes.MovementValues mAirMovement;
-		public virtual LudumDare29.DataTypes.MovementValues AirMovement
-		{
-			set
-			{
-				if (BeforeAirMovementSet != null)
-				{
-					BeforeAirMovementSet(this, null);
-				}
-				mAirMovement = value;
-				if (AfterAirMovementSet != null)
-				{
-					AfterAirMovementSet(this, null);
-				}
-			}
-			get
-			{
-				return mAirMovement;
-			}
-		}
-		public event EventHandler BeforeAfterDoubleJumpSet;
-		public event EventHandler AfterAfterDoubleJumpSet;
-		LudumDare29.DataTypes.MovementValues mAfterDoubleJump;
-		public virtual LudumDare29.DataTypes.MovementValues AfterDoubleJump
-		{
-			set
-			{
-				if (BeforeAfterDoubleJumpSet != null)
-				{
-					BeforeAfterDoubleJumpSet(this, null);
-				}
-				mAfterDoubleJump = value;
-				if (AfterAfterDoubleJumpSet != null)
-				{
-					AfterAfterDoubleJumpSet(this, null);
-				}
-			}
-			get
-			{
-				return mAfterDoubleJump;
-			}
-		}
 		protected Layer LayerProvidedByContainer = null;
 
-        public PlatformerCharacterBase()
+        public SignEntity()
             : this(FlatRedBall.Screens.ScreenManager.CurrentScreen.ContentManagerName, true)
         {
 
         }
 
-        public PlatformerCharacterBase(string contentManagerName) :
+        public SignEntity(string contentManagerName) :
             this(contentManagerName, true)
         {
         }
 
 
-        public PlatformerCharacterBase(string contentManagerName, bool addToManagers) :
+        public SignEntity(string contentManagerName, bool addToManagers) :
 			base()
 		{
 			// Don't delete this:
@@ -160,6 +98,10 @@ namespace LudumDare29.Entities
 		{
 			// Generated Initialize
 			LoadStaticContent(ContentManagerName);
+			TextInstance = new FlatRedBall.Graphics.Text();
+			TextInstance.Name = "TextInstance";
+			SpriteInstance = new FlatRedBall.Sprite();
+			SpriteInstance.Name = "SpriteInstance";
 			mCollision = new FlatRedBall.Math.Geometry.AxisAlignedRectangle();
 			mCollision.Name = "mCollision";
 			
@@ -177,12 +119,24 @@ namespace LudumDare29.Entities
 		{
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddPositionedObject(this);
+			TextManager.AddToLayer(TextInstance, LayerProvidedByContainer);
+			if (TextInstance.Font != null)
+			{
+				TextInstance.SetPixelPerfectScale(LayerProvidedByContainer);
+			}
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			ShapeManager.AddToLayer(mCollision, LayerProvidedByContainer);
 		}
 		public virtual void AddToManagers (Layer layerToAddTo)
 		{
 			LayerProvidedByContainer = layerToAddTo;
 			SpriteManager.AddPositionedObject(this);
+			TextManager.AddToLayer(TextInstance, LayerProvidedByContainer);
+			if (TextInstance.Font != null)
+			{
+				TextInstance.SetPixelPerfectScale(LayerProvidedByContainer);
+			}
+			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			ShapeManager.AddToLayer(mCollision, LayerProvidedByContainer);
 			AddToManagersBottomUp(layerToAddTo);
 			CustomInitialize();
@@ -202,6 +156,14 @@ namespace LudumDare29.Entities
 			// Generated Destroy
 			SpriteManager.RemovePositionedObject(this);
 			
+			if (TextInstance != null)
+			{
+				TextManager.RemoveText(TextInstance);
+			}
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSprite(SpriteInstance);
+			}
 			if (Collision != null)
 			{
 				ShapeManager.Remove(Collision);
@@ -216,17 +178,50 @@ namespace LudumDare29.Entities
 		{
 			bool oldShapeManagerSuppressAdd = FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = true;
-			this.AfterGroundMovementSet += OnAfterGroundMovementSet;
-			this.AfterAirMovementSet += OnAfterAirMovementSet;
-			this.AfterAfterDoubleJumpSet += OnAfterAfterDoubleJumpSet;
+			if (TextInstance.Parent == null)
+			{
+				TextInstance.CopyAbsoluteToRelative();
+				TextInstance.AttachTo(this, false);
+			}
+			TextInstance.DisplayText = "TEEEST";
+			TextInstance.Font = MazetechFont;
+			TextInstance.NewLineDistance = 9f;
+			TextInstance.Scale = 6f;
+			TextInstance.Spacing = 6f;
+			if (TextInstance.Parent == null)
+			{
+				TextInstance.Z = 15f;
+			}
+			else
+			{
+				TextInstance.RelativeZ = 15f;
+			}
+			TextInstance.HorizontalAlignment = FlatRedBall.Graphics.HorizontalAlignment.Center;
+			TextInstance.VerticalAlignment = FlatRedBall.Graphics.VerticalAlignment.Center;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.CopyAbsoluteToRelative();
+				SpriteInstance.AttachTo(this, false);
+			}
+			SpriteInstance.Texture = MessageTexture;
+			SpriteInstance.TextureScale = 2.5f;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.Z = -10f;
+			}
+			else
+			{
+				SpriteInstance.RelativeZ = -10f;
+			}
+			SpriteInstance.Visible = true;
 			if (mCollision.Parent == null)
 			{
 				mCollision.CopyAbsoluteToRelative();
 				mCollision.AttachTo(this, false);
 			}
 			Collision.Color = Color.Red;
-			Collision.Height = 48f;
-			Collision.Visible = false;
+			Collision.Height = 200f;
+			Collision.Visible = true;
 			Collision.Width = 32f;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
@@ -237,6 +232,14 @@ namespace LudumDare29.Entities
 		public virtual void RemoveFromManagers ()
 		{
 			SpriteManager.ConvertToManuallyUpdated(this);
+			if (TextInstance != null)
+			{
+				TextManager.RemoveTextOneWay(TextInstance);
+			}
+			if (SpriteInstance != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(SpriteInstance);
+			}
 			if (Collision != null)
 			{
 				ShapeManager.RemoveOneWay(Collision);
@@ -247,15 +250,43 @@ namespace LudumDare29.Entities
 			if (callOnContainedElements)
 			{
 			}
+			TextInstance.DisplayText = "TEEEST";
+			TextInstance.Font = MazetechFont;
+			TextInstance.NewLineDistance = 9f;
+			TextInstance.Scale = 6f;
+			TextInstance.Spacing = 6f;
+			if (TextInstance.Parent == null)
+			{
+				TextInstance.Z = 15f;
+			}
+			else
+			{
+				TextInstance.RelativeZ = 15f;
+			}
+			TextInstance.HorizontalAlignment = FlatRedBall.Graphics.HorizontalAlignment.Center;
+			TextInstance.VerticalAlignment = FlatRedBall.Graphics.VerticalAlignment.Center;
+			SpriteInstance.Texture = MessageTexture;
+			SpriteInstance.TextureScale = 2.5f;
+			if (SpriteInstance.Parent == null)
+			{
+				SpriteInstance.Z = -10f;
+			}
+			else
+			{
+				SpriteInstance.RelativeZ = -10f;
+			}
+			SpriteInstance.Visible = true;
 			mCollision.Color = Color.Red;
-			mCollision.Height = 48f;
-			mCollision.Visible = false;
+			mCollision.Height = 200f;
+			mCollision.Visible = true;
 			mCollision.Width = 32f;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
 			this.ForceUpdateDependenciesDeep();
 			SpriteManager.ConvertToManuallyUpdated(this);
+			TextManager.ConvertToManuallyUpdated(TextInstance);
+			SpriteManager.ConvertToManuallyUpdated(SpriteInstance);
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{
@@ -282,22 +313,30 @@ namespace LudumDare29.Entities
 				{
 					if (!mRegisteredUnloads.Contains(ContentManagerName) && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 					{
-						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("PlatformerCharacterBaseStaticUnload", UnloadStaticContent);
+						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("SignEntityStaticUnload", UnloadStaticContent);
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
-				if (MovementValues == null)
+				if (!FlatRedBallServices.IsLoaded<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/signentity/mazetechfont_1.png", ContentManagerName))
 				{
-					{
-						// We put the { and } to limit the scope of oldDelimiter
-						char oldDelimiter = CsvFileManager.Delimiter;
-						CsvFileManager.Delimiter = ',';
-						Dictionary<string, MovementValues> temporaryCsvObject = new Dictionary<string, MovementValues>();
-						CsvFileManager.CsvDeserializeDictionary<string, MovementValues>("content/entities/platformercharacterbase/movementvalues.csv", temporaryCsvObject);
-						CsvFileManager.Delimiter = oldDelimiter;
-						MovementValues = temporaryCsvObject;
-					}
+					registerUnload = true;
 				}
+				MazetechFont_1 = FlatRedBallServices.Load<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/signentity/mazetechfont_1.png", ContentManagerName);
+				if (!FlatRedBallServices.IsLoaded<FlatRedBall.Graphics.BitmapFont>(@"content/entities/signentity/mazetechfont.fnt", ContentManagerName))
+				{
+					registerUnload = true;
+				}
+				MazetechFont = FlatRedBallServices.Load<FlatRedBall.Graphics.BitmapFont>(@"content/entities/signentity/mazetechfont.fnt", ContentManagerName);
+				if (!FlatRedBallServices.IsLoaded<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/signentity/mazetechfont_0.png", ContentManagerName))
+				{
+					registerUnload = true;
+				}
+				MazetechFont_0 = FlatRedBallServices.Load<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/signentity/mazetechfont_0.png", ContentManagerName);
+				if (!FlatRedBallServices.IsLoaded<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/signentity/messagetexture.png", ContentManagerName))
+				{
+					registerUnload = true;
+				}
+				MessageTexture = FlatRedBallServices.Load<Microsoft.Xna.Framework.Graphics.Texture2D>(@"content/entities/signentity/messagetexture.png", ContentManagerName);
 			}
 			if (registerUnload && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 			{
@@ -305,7 +344,7 @@ namespace LudumDare29.Entities
 				{
 					if (!mRegisteredUnloads.Contains(ContentManagerName) && ContentManagerName != FlatRedBallServices.GlobalContentManager)
 					{
-						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("PlatformerCharacterBaseStaticUnload", UnloadStaticContent);
+						FlatRedBallServices.GetContentManagerByName(ContentManagerName).AddUnloadMethod("SignEntityStaticUnload", UnloadStaticContent);
 						mRegisteredUnloads.Add(ContentManagerName);
 					}
 				}
@@ -321,9 +360,21 @@ namespace LudumDare29.Entities
 			}
 			if (LoadedContentManagers.Count == 0)
 			{
-				if (MovementValues != null)
+				if (MazetechFont_1 != null)
 				{
-					MovementValues= null;
+					MazetechFont_1= null;
+				}
+				if (MazetechFont != null)
+				{
+					MazetechFont= null;
+				}
+				if (MazetechFont_0 != null)
+				{
+					MazetechFont_0= null;
+				}
+				if (MessageTexture != null)
+				{
+					MessageTexture= null;
 				}
 			}
 		}
@@ -332,8 +383,14 @@ namespace LudumDare29.Entities
 		{
 			switch(memberName)
 			{
-				case  "MovementValues":
-					return MovementValues;
+				case  "MazetechFont_1":
+					return MazetechFont_1;
+				case  "MazetechFont":
+					return MazetechFont;
+				case  "MazetechFont_0":
+					return MazetechFont_0;
+				case  "MessageTexture":
+					return MessageTexture;
 			}
 			return null;
 		}
@@ -341,8 +398,14 @@ namespace LudumDare29.Entities
 		{
 			switch(memberName)
 			{
-				case  "MovementValues":
-					return MovementValues;
+				case  "MazetechFont_1":
+					return MazetechFont_1;
+				case  "MazetechFont":
+					return MazetechFont;
+				case  "MazetechFont_0":
+					return MazetechFont_0;
+				case  "MessageTexture":
+					return MessageTexture;
 			}
 			return null;
 		}
@@ -350,8 +413,14 @@ namespace LudumDare29.Entities
 		{
 			switch(memberName)
 			{
-				case  "MovementValues":
-					return MovementValues;
+				case  "MazetechFont_1":
+					return MazetechFont_1;
+				case  "MazetechFont":
+					return MazetechFont;
+				case  "MazetechFont_0":
+					return MazetechFont_0;
+				case  "MessageTexture":
+					return MessageTexture;
 			}
 			return null;
 		}
@@ -364,10 +433,22 @@ namespace LudumDare29.Entities
 		public virtual void SetToIgnorePausing ()
 		{
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(this);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(TextInstance);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(SpriteInstance);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(Collision);
 		}
 		public virtual void MoveToLayer (Layer layerToMoveTo)
 		{
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(TextInstance);
+			}
+			TextManager.AddToLayer(TextInstance, layerToMoveTo);
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(SpriteInstance);
+			}
+			SpriteManager.AddToLayer(SpriteInstance, layerToMoveTo);
 			LayerProvidedByContainer = layerToMoveTo;
 		}
 

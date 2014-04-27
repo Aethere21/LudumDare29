@@ -64,7 +64,27 @@
   </tile>
   <tile id="132">
    <properties>
-    <property name="Name" value="Sign_Test Test Test"/>
+    <property name="Name" value="Sign_Welcome! Press enter to close this message."/>
+   </properties>
+  </tile>
+  <tile id="133">
+   <properties>
+    <property name="Name" value="Sign_Yeah, that sign was useless."/>
+   </properties>
+  </tile>
+  <tile id="134">
+   <properties>
+    <property name="Name" value="Sign_You accidentally dropped your diamond fedora in the hole! You have to go get it!_takeOffFedora"/>
+   </properties>
+  </tile>
+  <tile id="135">
+   <properties>
+    <property name="Name" value="Sign_You are going to meet Mary at the park today! You are going to impress her with your new diamond fedora. (Press enter to close this message)"/>
+   </properties>
+  </tile>
+  <tile id="162">
+   <properties>
+    <property name="Name" value="Action_takeOffFedora"/>
    </properties>
   </tile>
  </tileset>
@@ -75,12 +95,17 @@
  </layer>
  <layer name="Other" width="60" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3OywmAMBAE0FQntqFebMRK1D7NIccQEIPx8x4MexgWJgQAAACAuvqYIXNLXenn6caYKXNLXennjDVmu7D9jfbWA262tB4AAADAp80pf9GlQE0HiD8v/oAlAAA=
+   H4sIAAAAAAAAC+3LsQkAIBADQKcT11D338EvLOUrBYs7CClCSgEAAAC4q0X6obMt+/xuROahsy37AAAAAPBG3YGbFqp0GA2AJQAA
   </data>
  </layer>
  <layer name="Invisible" width="60" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3PQREAIAwEscrBBl7wrwEL/K5MEwW7VQAAAAD85qQDgJZWOiDA8wxTn3c6AgAAeHIB0pMbz4AlAAA=
+   H4sIAAAAAAAAC+3PsQ3AIBRDQcZhjexCwSbJ2DS0adJY5N9J7p9bAwAAAOA0Ix3wE3c64MWTDuBYPR0Q4HMNVT9f6QgAoIS5B3y3AD4Y4zSAJQAA
+  </data>
+ </layer>
+ <layer name="Invisible2" width="60" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3OAQ0AAAgDoPevYVFjfE5IQAIAAAAAP007AAAAAMB5C8MsTJKAJQAA
   </data>
  </layer>
 </map>

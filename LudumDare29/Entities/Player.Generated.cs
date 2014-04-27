@@ -70,6 +70,18 @@ namespace LudumDare29.Entities
 				mGunRectangle = value;
 			}
 		}
+		private FlatRedBall.Sprite mFedoraSprite;
+		public FlatRedBall.Sprite FedoraSprite
+		{
+			get
+			{
+				return mFedoraSprite;
+			}
+			private set
+			{
+				mFedoraSprite = value;
+			}
+		}
 		public event EventHandler BeforeGroundMovementSet;
 		public event EventHandler AfterGroundMovementSet;
 		public override LudumDare29.DataTypes.MovementValues GroundMovement
@@ -165,6 +177,8 @@ namespace LudumDare29.Entities
 			HandSprite.Name = "HandSprite";
 			mGunRectangle = new FlatRedBall.Math.Geometry.AxisAlignedRectangle();
 			mGunRectangle.Name = "mGunRectangle";
+			mFedoraSprite = new FlatRedBall.Sprite();
+			mFedoraSprite.Name = "mFedoraSprite";
 			
 			base.InitializeEntity(addToManagers);
 
@@ -178,6 +192,7 @@ namespace LudumDare29.Entities
 			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			SpriteManager.AddToLayer(HandSprite, LayerProvidedByContainer);
 			ShapeManager.AddToLayer(mGunRectangle, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(mFedoraSprite, LayerProvidedByContainer);
 		}
 		public override void AddToManagers (Layer layerToAddTo)
 		{
@@ -185,6 +200,7 @@ namespace LudumDare29.Entities
 			SpriteManager.AddToLayer(SpriteInstance, LayerProvidedByContainer);
 			SpriteManager.AddToLayer(HandSprite, LayerProvidedByContainer);
 			ShapeManager.AddToLayer(mGunRectangle, LayerProvidedByContainer);
+			SpriteManager.AddToLayer(mFedoraSprite, LayerProvidedByContainer);
 			base.AddToManagers(layerToAddTo);
 			CustomInitialize();
 		}
@@ -215,6 +231,10 @@ namespace LudumDare29.Entities
 			if (GunRectangle != null)
 			{
 				ShapeManager.Remove(GunRectangle);
+			}
+			if (FedoraSprite != null)
+			{
+				SpriteManager.RemoveSprite(FedoraSprite);
 			}
 
 
@@ -257,9 +277,17 @@ namespace LudumDare29.Entities
 				mGunRectangle.CopyAbsoluteToRelative();
 				mGunRectangle.AttachTo(this, false);
 			}
-			GunRectangle.Width = 5f;
 			GunRectangle.Height = 5f;
 			GunRectangle.Visible = false;
+			GunRectangle.Width = 5f;
+			if (mFedoraSprite.Parent == null)
+			{
+				mFedoraSprite.CopyAbsoluteToRelative();
+				mFedoraSprite.AttachTo(this, false);
+			}
+			FedoraSprite.AnimationChains = AnimationChainListFile;
+			FedoraSprite.PixelSize = 1f;
+			FedoraSprite.CurrentChainName = "Fedora";
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public override void AddToManagersBottomUp (Layer layerToAddTo)
@@ -282,6 +310,10 @@ namespace LudumDare29.Entities
 			{
 				ShapeManager.RemoveOneWay(GunRectangle);
 			}
+			if (FedoraSprite != null)
+			{
+				SpriteManager.RemoveSpriteOneWay(FedoraSprite);
+			}
 		}
 		public override void AssignCustomVariables (bool callOnContainedElements)
 		{
@@ -299,9 +331,12 @@ namespace LudumDare29.Entities
 			HandSprite.TextureScale = 1f;
 			HandSprite.PixelSize = 1.5f;
 			HandSprite.CurrentChainName = "Hand";
-			mGunRectangle.Width = 5f;
 			mGunRectangle.Height = 5f;
 			mGunRectangle.Visible = false;
+			mGunRectangle.Width = 5f;
+			mFedoraSprite.AnimationChains = AnimationChainListFile;
+			mFedoraSprite.PixelSize = 1f;
+			mFedoraSprite.CurrentChainName = "Fedora";
 			GroundMovement = Player.MovementValues["ImmediateVelocityOnGround"];
 			AirMovement = Player.MovementValues["ImmediateVelocityBeforeDoubleJump"];
 			AfterDoubleJump = Player.MovementValues["ImmediateVelocityInAir"];
@@ -313,6 +348,7 @@ namespace LudumDare29.Entities
 			SpriteManager.ConvertToManuallyUpdated(this);
 			SpriteManager.ConvertToManuallyUpdated(SpriteInstance);
 			SpriteManager.ConvertToManuallyUpdated(HandSprite);
+			SpriteManager.ConvertToManuallyUpdated(FedoraSprite);
 		}
 		public static new void LoadStaticContent (string contentManagerName)
 		{
@@ -428,6 +464,7 @@ namespace LudumDare29.Entities
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(SpriteInstance);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(HandSprite);
 			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(GunRectangle);
+			FlatRedBall.Instructions.InstructionManager.IgnorePausingFor(FedoraSprite);
 		}
 		public override void MoveToLayer (Layer layerToMoveTo)
 		{
@@ -442,6 +479,11 @@ namespace LudumDare29.Entities
 				LayerProvidedByContainer.Remove(HandSprite);
 			}
 			SpriteManager.AddToLayer(HandSprite, layerToMoveTo);
+			if (LayerProvidedByContainer != null)
+			{
+				LayerProvidedByContainer.Remove(FedoraSprite);
+			}
+			SpriteManager.AddToLayer(FedoraSprite, layerToMoveTo);
 			LayerProvidedByContainer = layerToMoveTo;
 		}
 

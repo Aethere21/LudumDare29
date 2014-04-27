@@ -44,13 +44,6 @@
           <IndependentOfCamera>true</IndependentOfCamera>
         </NamedObjectSave>
         <NamedObjectSave>
-          <SourceType>Entity</SourceType>
-          <SourceClassType>Entities\Player</SourceClassType>
-          <InstanceName>PlayerInstance</InstanceName>
-          <AttachToContainer>true</AttachToContainer>
-          <IndependentOfCamera>true</IndependentOfCamera>
-        </NamedObjectSave>
-        <NamedObjectSave>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
           <SourceName />
@@ -72,6 +65,29 @@
           <SourceClassType>PositionedObjectList&lt;T&gt;</SourceClassType>
           <SourceClassGenericType>Entities\NextLevelEntity</SourceClassGenericType>
           <InstanceName>NextLevelEntityList</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <SourceType>Entity</SourceType>
+          <SourceClassType>Entities\Player</SourceClassType>
+          <InstanceName>PlayerInstance</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceClassType>PositionedObjectList&lt;T&gt;</SourceClassType>
+          <SourceClassGenericType>Entities\SignEntity</SourceClassGenericType>
+          <InstanceName>SignEntityList</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceClassType>PositionedObjectList&lt;T&gt;</SourceClassType>
+          <SourceClassGenericType>Entities\ActionEntity</SourceClassGenericType>
+          <InstanceName>ActionEntityList</InstanceName>
           <AttachToContainer>true</AttachToContainer>
           <IndependentOfCamera>true</IndependentOfCamera>
         </NamedObjectSave>
@@ -123,14 +139,81 @@
           <Type>float</Type>
         </CustomVariable>
       </CustomVariables>
-      <Name>Entities\Bullet</Name>
+      <Name>Entities\ActionEntity</Name>
       <NamedObjects>
         <NamedObjectSave>
           <CustomProperty>
             <Type>float</Type>
             <Member>Width</Member>
-            <ValueAsFloat>2.5</ValueAsFloat>
+            <ValueAsFloat>32</ValueAsFloat>
           </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Height</Member>
+            <ValueAsFloat>200</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>Color</Type>
+            <Member>Color</Member>
+            <ValueAsString>Red</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>true</ValueAsBool>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>AxisAlignedRectangle</SourceClassType>
+          <InstanceName>Collision</InstanceName>
+          <HasPublicProperty>true</HasPublicProperty>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+      </NamedObjects>
+      <Is2D>true</Is2D>
+    </EntitySave>
+    <EntitySave>
+      <Tags>
+        <string>GLUE</string>
+      </Tags>
+      <Source>GLUE</Source>
+      <CustomVariables>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>X</Name>
+          <Type>float</Type>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>Y</Name>
+          <Type>float</Type>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>Z</Name>
+          <Type>float</Type>
+        </CustomVariable>
+      </CustomVariables>
+      <Name>Entities\Bullet</Name>
+      <NamedObjects>
+        <NamedObjectSave>
           <CustomProperty>
             <Type>float</Type>
             <Member>Height</Member>
@@ -140,6 +223,11 @@
             <Type>bool</Type>
             <Member>Visible</Member>
             <ValueAsBool>false</ValueAsBool>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Width</Member>
+            <ValueAsFloat>2.5</ValueAsFloat>
           </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
@@ -152,6 +240,11 @@
         </NamedObjectSave>
         <NamedObjectSave>
           <CustomProperty>
+            <Type>Texture2D</Type>
+            <Member>Texture</Member>
+            <ValueAsString>BulletTexture</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
             <Type>float</Type>
             <Member>TextureScale</Member>
             <ValueAsFloat>0.5</ValueAsFloat>
@@ -160,11 +253,6 @@
             <Type>float</Type>
             <Member>Z</Member>
             <ValueAsFloat>8</ValueAsFloat>
-          </CustomProperty>
-          <CustomProperty>
-            <Type>Texture2D</Type>
-            <Member>Texture</Member>
-            <ValueAsString>BulletTexture</ValueAsString>
           </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
@@ -226,14 +314,14 @@
       <NamedObjects>
         <NamedObjectSave>
           <CustomProperty>
-            <Type>float</Type>
-            <Member>Width</Member>
-            <ValueAsFloat>32</ValueAsFloat>
+            <Type>Color</Type>
+            <Member>Color</Member>
+            <ValueAsString>Red</ValueAsString>
           </CustomProperty>
           <CustomProperty>
             <Type>float</Type>
             <Member>Height</Member>
-            <ValueAsFloat>32</ValueAsFloat>
+            <ValueAsFloat>64</ValueAsFloat>
           </CustomProperty>
           <CustomProperty>
             <Type>bool</Type>
@@ -241,9 +329,9 @@
             <ValueAsBool>true</ValueAsBool>
           </CustomProperty>
           <CustomProperty>
-            <Type>Color</Type>
-            <Member>Color</Member>
-            <ValueAsString>Red</ValueAsString>
+            <Type>float</Type>
+            <Member>Width</Member>
+            <ValueAsFloat>32</ValueAsFloat>
           </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
@@ -533,11 +621,6 @@
         <NamedObjectSave>
           <CustomProperty>
             <Type>float</Type>
-            <Member>Width</Member>
-            <ValueAsFloat>5</ValueAsFloat>
-          </CustomProperty>
-          <CustomProperty>
-            <Type>float</Type>
             <Member>Height</Member>
             <ValueAsFloat>5</ValueAsFloat>
           </CustomProperty>
@@ -546,11 +629,45 @@
             <Member>Visible</Member>
             <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Width</Member>
+            <ValueAsFloat>5</ValueAsFloat>
+          </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
           <SourceName />
           <SourceClassType>AxisAlignedRectangle</SourceClassType>
           <InstanceName>GunRectangle</InstanceName>
+          <HasPublicProperty>true</HasPublicProperty>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>Texture2D</Type>
+            <Member>Texture</Member>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>PixelSize</Member>
+            <ValueAsFloat>1</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>AnimationChainList</Type>
+            <Member>AnimationChains</Member>
+            <ValueAsString>AnimationChainListFile</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>string</Type>
+            <Member>CurrentChainName</Member>
+            <ValueAsString>Fedora</ValueAsString>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Sprite</SourceClassType>
+          <InstanceName>FedoraSprite</InstanceName>
           <HasPublicProperty>true</HasPublicProperty>
           <AttachToContainer>true</AttachToContainer>
           <IndependentOfCamera>true</IndependentOfCamera>
@@ -570,10 +687,182 @@
       </ReferencedFiles>
       <Is2D>true</Is2D>
     </EntitySave>
+    <EntitySave>
+      <Tags>
+        <string>GLUE</string>
+      </Tags>
+      <Source>GLUE</Source>
+      <CustomVariables>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>X</Name>
+          <Type>float</Type>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>Y</Name>
+          <Type>float</Type>
+        </CustomVariable>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>Z</Name>
+          <Type>float</Type>
+        </CustomVariable>
+      </CustomVariables>
+      <Name>Entities\SignEntity</Name>
+      <NamedObjects>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>string</Type>
+            <Member>DisplayText</Member>
+            <ValueAsString>TEEEST</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>BitmapFont</Type>
+            <Member>Font</Member>
+            <ValueAsString>MazetechFont</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>HorizontalAlignment</Type>
+            <Member>HorizontalAlignment</Member>
+            <ValueAsInt>2</ValueAsInt>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>NewLineDistance</Member>
+            <ValueAsFloat>9</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Scale</Member>
+            <ValueAsFloat>6</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Spacing</Member>
+            <ValueAsFloat>6</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>VerticalAlignment</Type>
+            <Member>VerticalAlignment</Member>
+            <ValueAsInt>2</ValueAsInt>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Z</Member>
+            <ValueAsFloat>15</ValueAsFloat>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Text</SourceClassType>
+          <InstanceName>TextInstance</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>Texture2D</Type>
+            <Member>Texture</Member>
+            <ValueAsString>MessageTexture</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>TextureScale</Member>
+            <ValueAsFloat>2.5</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>true</ValueAsBool>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Z</Member>
+            <ValueAsFloat>-10</ValueAsFloat>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Sprite</SourceClassType>
+          <InstanceName>SpriteInstance</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>Color</Type>
+            <Member>Color</Member>
+            <ValueAsString>Red</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Height</Member>
+            <ValueAsFloat>200</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>true</ValueAsBool>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Width</Member>
+            <ValueAsFloat>32</ValueAsFloat>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>AxisAlignedRectangle</SourceClassType>
+          <InstanceName>Collision</InstanceName>
+          <HasPublicProperty>true</HasPublicProperty>
+          <AttachToContainer>true</AttachToContainer>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+      </NamedObjects>
+      <ReferencedFiles>
+        <ReferencedFileSave>
+          <Name>Entities/SignEntity/MazetechFont_1.png</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <RuntimeType>Microsoft.Xna.Framework.Graphics.Texture2D</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Entities/SignEntity/MazetechFont.fnt</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <RuntimeType>FlatRedBall.Graphics.BitmapFont</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Entities/SignEntity/MazetechFont_0.png</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <RuntimeType>Microsoft.Xna.Framework.Graphics.Texture2D</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Entities/SignEntity/MessageTexture.png</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <RuntimeType>Microsoft.Xna.Framework.Graphics.Texture2D</RuntimeType>
+        </ReferencedFileSave>
+      </ReferencedFiles>
+      <Is2D>true</Is2D>
+    </EntitySave>
   </Entities>
   <GlobalFiles />
   <GlobalContentSettingsSave>
-    <LoadAsynchronously>false</LoadAsynchronously>
+    <LoadAsynchronously>true</LoadAsynchronously>
     <RecordLockContention>false</RecordLockContention>
   </GlobalContentSettingsSave>
   <SyncedProjects />

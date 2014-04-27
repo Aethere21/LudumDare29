@@ -13,5 +13,7 @@ namespace LudumDare29
         public string currentLevel;
         public int gunAccuracy; //---
         public int playerDefense;
+
+        public bool FedoraOnHead;
     }
 }

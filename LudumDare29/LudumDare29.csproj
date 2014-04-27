@@ -115,6 +115,10 @@
   <ItemGroup>
     <Compile Include="DataTypes\MovementValues.Generated.cs" />
     <Compile Include="DataTypes\TileMapInfo.Generated.cs" />
+    <Compile Include="Entities\ActionEntity.cs" />
+    <Compile Include="Entities\ActionEntity.Generated.cs">
+      <DependentUpon>ActionEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Entities\Bullet.cs" />
     <Compile Include="Entities\Bullet.Generated.cs">
       <DependentUpon>Bullet.cs</DependentUpon>
@@ -137,6 +141,10 @@
     <Compile Include="Entities\Player.Generated.cs">
       <DependentUpon>Player.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entities\SignEntity.cs" />
+    <Compile Include="Entities\SignEntity.Generated.cs">
+      <DependentUpon>SignEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Factories\BulletFactory.Generated.cs" />
     <Compile Include="GlobalContent.Generated.cs" />
     <Compile Include="GlobalData.cs" />
@@ -156,6 +164,7 @@
       <DependentUpon>MenuScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Setup\CameraSetup.cs" />
+    <Compile Include="TextDrawableBatch.cs" />
     <Compile Include="TileCollisions\TileShapeCollection.cs" />
     <Compile Include="TileEntities\TileEntityInstantiator.cs" />
     <Compile Include="TileGraphics\AnimationChainContainer.cs" />

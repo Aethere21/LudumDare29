@@ -179,5 +179,21 @@
       <RelativeY>0</RelativeY>
     </Frame>
   </AnimationChain>
+  <AnimationChain>
+    <Name>Fedora</Name>
+    <ColorKey>0</ColorKey>
+    <Frame>
+      <FlipHorizontal>false</FlipHorizontal>
+      <FlipVertical>false</FlipVertical>
+      <TextureName>Fedora.png</TextureName>
+      <FrameLength>0.1</FrameLength>
+      <LeftCoordinate>0</LeftCoordinate>
+      <RightCoordinate>1</RightCoordinate>
+      <TopCoordinate>0.3125</TopCoordinate>
+      <BottomCoordinate>0.625</BottomCoordinate>
+      <RelativeX>0</RelativeX>
+      <RelativeY>0</RelativeY>
+    </Frame>
+  </AnimationChain>
   <FileName>C:/Users/Jakub/Documents/FlatRedBallProjects/LudumDare29/LudumDare29/LudumDare29Content/Entities/Player/AnimationChainListFile.achx</FileName>
 </AnimationChainArraySave>

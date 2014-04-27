@@ -42,10 +42,12 @@ namespace LudumDare29.Screens
 		protected static FlatRedBall.TileGraphics.LayeredTileMap Level2;
 		
 		private FlatRedBall.TileGraphics.LayeredTileMap TiledMap;
-		private LudumDare29.Entities.Player PlayerInstance;
 		private FlatRedBall.Math.Geometry.ShapeCollection TileCollisionShapes;
 		private PositionedObjectList<LudumDare29.Entities.Bullet> BulletList;
 		private PositionedObjectList<LudumDare29.Entities.NextLevelEntity> NextLevelEntityList;
+		private LudumDare29.Entities.Player PlayerInstance;
+		private PositionedObjectList<LudumDare29.Entities.SignEntity> SignEntityList;
+		private PositionedObjectList<LudumDare29.Entities.ActionEntity> ActionEntityList;
 
 		public GameScreen()
 			: base("GameScreen")
@@ -58,14 +60,18 @@ namespace LudumDare29.Screens
 			LoadStaticContent(ContentManagerName);
 			TiledMap = new FlatRedBall.TileGraphics.LayeredTileMap();
 			TiledMap.Name = "TiledMap";
-			PlayerInstance = new LudumDare29.Entities.Player(ContentManagerName, false);
-			PlayerInstance.Name = "PlayerInstance";
 			TileCollisionShapes = new FlatRedBall.Math.Geometry.ShapeCollection();
 			TileCollisionShapes.Name = "TileCollisionShapes";
 			BulletList = new PositionedObjectList<LudumDare29.Entities.Bullet>();
 			BulletList.Name = "BulletList";
 			NextLevelEntityList = new PositionedObjectList<LudumDare29.Entities.NextLevelEntity>();
 			NextLevelEntityList.Name = "NextLevelEntityList";
+			PlayerInstance = new LudumDare29.Entities.Player(ContentManagerName, false);
+			PlayerInstance.Name = "PlayerInstance";
+			SignEntityList = new PositionedObjectList<LudumDare29.Entities.SignEntity>();
+			SignEntityList.Name = "SignEntityList";
+			ActionEntityList = new PositionedObjectList<LudumDare29.Entities.ActionEntity>();
+			ActionEntityList.Name = "ActionEntityList";
 			
 			
 			PostInitialize();
@@ -81,8 +87,8 @@ namespace LudumDare29.Screens
 		public override void AddToManagers ()
 		{
 			BulletFactory.Initialize(BulletList, ContentManagerName);
-			PlayerInstance.AddToManagers(mLayer);
 			TileCollisionShapes.AddToManagers();
+			PlayerInstance.AddToManagers(mLayer);
 			base.AddToManagers();
 			AddToManagersBottomUp();
 			CustomInitialize();
@@ -95,7 +101,6 @@ namespace LudumDare29.Screens
 			if (!IsPaused)
 			{
 				
-				PlayerInstance.Activity();
 				for (int i = BulletList.Count - 1; i > -1; i--)
 				{
 					if (i < BulletList.Count)
@@ -110,6 +115,23 @@ namespace LudumDare29.Screens
 					{
 						// We do the extra if-check because activity could destroy any number of entities
 						NextLevelEntityList[i].Activity();
+					}
+				}
+				PlayerInstance.Activity();
+				for (int i = SignEntityList.Count - 1; i > -1; i--)
+				{
+					if (i < SignEntityList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						SignEntityList[i].Activity();
+					}
+				}
+				for (int i = ActionEntityList.Count - 1; i > -1; i--)
+				{
+					if (i < ActionEntityList.Count)
+					{
+						// We do the extra if-check because activity could destroy any number of entities
+						ActionEntityList[i].Activity();
 					}
 				}
 			}
@@ -139,11 +161,8 @@ namespace LudumDare29.Screens
 			
 			BulletList.MakeOneWay();
 			NextLevelEntityList.MakeOneWay();
-			if (PlayerInstance != null)
-			{
-				PlayerInstance.Destroy();
-				PlayerInstance.Detach();
-			}
+			SignEntityList.MakeOneWay();
+			ActionEntityList.MakeOneWay();
 			if (TileCollisionShapes != null)
 			{
 				TileCollisionShapes.RemoveFromManagers(ContentManagerName != "Global");
@@ -156,8 +175,23 @@ namespace LudumDare29.Screens
 			{
 				NextLevelEntityList[i].Destroy();
 			}
+			if (PlayerInstance != null)
+			{
+				PlayerInstance.Destroy();
+				PlayerInstance.Detach();
+			}
+			for (int i = SignEntityList.Count - 1; i > -1; i--)
+			{
+				SignEntityList[i].Destroy();
+			}
+			for (int i = ActionEntityList.Count - 1; i > -1; i--)
+			{
+				ActionEntityList[i].Destroy();
+			}
 			BulletList.MakeTwoWay();
 			NextLevelEntityList.MakeTwoWay();
+			SignEntityList.MakeTwoWay();
+			ActionEntityList.MakeTwoWay();
 
 			base.Destroy();
 
@@ -179,7 +213,6 @@ namespace LudumDare29.Screens
 		}
 		public virtual void RemoveFromManagers ()
 		{
-			PlayerInstance.RemoveFromManagers();
 			if (TileCollisionShapes != null)
 			{
 				TileCollisionShapes.RemoveFromManagers(false);
@@ -192,6 +225,15 @@ namespace LudumDare29.Screens
 			{
 				NextLevelEntityList[i].Destroy();
 			}
+			PlayerInstance.RemoveFromManagers();
+			for (int i = SignEntityList.Count - 1; i > -1; i--)
+			{
+				SignEntityList[i].Destroy();
+			}
+			for (int i = ActionEntityList.Count - 1; i > -1; i--)
+			{
+				ActionEntityList[i].Destroy();
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
@@ -202,7 +244,6 @@ namespace LudumDare29.Screens
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
-			PlayerInstance.ConvertToManuallyUpdated();
 			for (int i = 0; i < BulletList.Count; i++)
 			{
 				BulletList[i].ConvertToManuallyUpdated();
@@ -210,6 +251,15 @@ namespace LudumDare29.Screens
 			for (int i = 0; i < NextLevelEntityList.Count; i++)
 			{
 				NextLevelEntityList[i].ConvertToManuallyUpdated();
+			}
+			PlayerInstance.ConvertToManuallyUpdated();
+			for (int i = 0; i < SignEntityList.Count; i++)
+			{
+				SignEntityList[i].ConvertToManuallyUpdated();
+			}
+			for (int i = 0; i < ActionEntityList.Count; i++)
+			{
+				ActionEntityList[i].ConvertToManuallyUpdated();
 			}
 		}
 		public static void LoadStaticContent (string contentManagerName)

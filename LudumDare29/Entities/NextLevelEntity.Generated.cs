@@ -152,10 +152,10 @@ namespace LudumDare29.Entities
 				mCollision.CopyAbsoluteToRelative();
 				mCollision.AttachTo(this, false);
 			}
-			Collision.Width = 32f;
-			Collision.Height = 32f;
-			Collision.Visible = true;
 			Collision.Color = Color.Red;
+			Collision.Height = 64f;
+			Collision.Visible = true;
+			Collision.Width = 32f;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp (Layer layerToAddTo)
@@ -175,10 +175,10 @@ namespace LudumDare29.Entities
 			if (callOnContainedElements)
 			{
 			}
-			mCollision.Width = 32f;
-			mCollision.Height = 32f;
-			mCollision.Visible = true;
 			mCollision.Color = Color.Red;
+			mCollision.Height = 64f;
+			mCollision.Visible = true;
+			mCollision.Width = 32f;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
