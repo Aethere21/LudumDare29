@@ -165,6 +165,7 @@ namespace LudumDare29.Entities
 			}
 			Collision.Width = 32f;
 			Collision.Height = 32f;
+			Collision.Visible = false;
 			if (SpriteInstance.Parent == null)
 			{
 				SpriteInstance.CopyAbsoluteToRelative();
@@ -198,6 +199,7 @@ namespace LudumDare29.Entities
 			}
 			mCollision.Width = 32f;
 			mCollision.Height = 32f;
+			mCollision.Visible = false;
 			SpriteInstance.TextureScale = 2f;
 			SpriteInstance.AnimationChains = AnimationChainListFile;
 			SpriteInstance.CurrentChainName = "Enemy";

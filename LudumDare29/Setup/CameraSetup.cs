@@ -18,7 +18,7 @@ namespace LudumDare29
 				#if WINDOWS_PHONE || WINDOWS_8 || IOS || ANDROID
 				graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
 				#endif
-				cameraToSetUp.UsePixelCoordinates(false, 1000, 600);
+				cameraToSetUp.UsePixelCoordinates();
 			}
 			internal static void ResetCamera (Camera cameraToReset)
 			{

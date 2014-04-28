@@ -185,7 +185,7 @@ namespace LudumDare29.Entities
 			}
 			Collision.Width = 32f;
 			Collision.Height = 32f;
-			Collision.Visible = true;
+			Collision.Visible = false;
 			if (SpriteInstance.Parent == null)
 			{
 				SpriteInstance.CopyAbsoluteToRelative();
@@ -201,6 +201,7 @@ namespace LudumDare29.Entities
 			}
 			BulletPosRect.Width = 5f;
 			BulletPosRect.Height = 5f;
+			BulletPosRect.Visible = false;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp (Layer layerToAddTo)
@@ -230,12 +231,13 @@ namespace LudumDare29.Entities
 			}
 			mCollision.Width = 32f;
 			mCollision.Height = 32f;
-			mCollision.Visible = true;
+			mCollision.Visible = false;
 			SpriteInstance.TextureScale = 2f;
 			SpriteInstance.AnimationChains = AnimationChainListFile;
 			SpriteInstance.CurrentChainName = "Enemy";
 			mBulletPosRect.Width = 5f;
 			mBulletPosRect.Height = 5f;
+			mBulletPosRect.Visible = false;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{

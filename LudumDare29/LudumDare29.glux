@@ -5,7 +5,7 @@
   <SetResolution>true</SetResolution>
   <ResolutionWidth>1280</ResolutionWidth>
   <ResolutionHeight>800</ResolutionHeight>
-  <SetOrthogonalResolution>true</SetOrthogonalResolution>
+  <SetOrthogonalResolution>false</SetOrthogonalResolution>
   <OrthogonalWidth>1000</OrthogonalWidth>
   <OrthogonalHeight>600</OrthogonalHeight>
   <Screens>
@@ -29,6 +29,30 @@
           <IsSharedStatic>true</IsSharedStatic>
           <LoadedOnlyWhenReferenced>true</LoadedOnlyWhenReferenced>
           <SourceFile>Screens/GameScreen/Level2.tmx</SourceFile>
+          <BuildTool>*.tmx -&gt; TmxToScnx.exe -&gt; *.tilb</BuildTool>
+          <RuntimeType>FlatRedBall.TileGraphics.LayeredTileMap</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Screens/GameScreen/Level3.scnx</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <LoadedOnlyWhenReferenced>true</LoadedOnlyWhenReferenced>
+          <SourceFile>Screens/GameScreen/Level3.tmx</SourceFile>
+          <BuildTool>*.tmx -&gt; TmxToScnx.exe -&gt; *.tilb</BuildTool>
+          <RuntimeType>FlatRedBall.TileGraphics.LayeredTileMap</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Screens/GameScreen/Level4.tilb</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <LoadedOnlyWhenReferenced>true</LoadedOnlyWhenReferenced>
+          <SourceFile>Screens/GameScreen/Level4.tmx</SourceFile>
+          <BuildTool>*.tmx -&gt; TmxToScnx.exe -&gt; *.tilb</BuildTool>
+          <RuntimeType>FlatRedBall.TileGraphics.LayeredTileMap</RuntimeType>
+        </ReferencedFileSave>
+        <ReferencedFileSave>
+          <Name>Screens/GameScreen/EndLevel.tilb</Name>
+          <IsSharedStatic>true</IsSharedStatic>
+          <LoadedOnlyWhenReferenced>true</LoadedOnlyWhenReferenced>
+          <SourceFile>Screens/GameScreen/EndLevel.tmx</SourceFile>
           <BuildTool>*.tmx -&gt; TmxToScnx.exe -&gt; *.tilb</BuildTool>
           <RuntimeType>FlatRedBall.TileGraphics.LayeredTileMap</RuntimeType>
         </ReferencedFileSave>
@@ -132,6 +156,46 @@
           <AttachToContainer>true</AttachToContainer>
           <IndependentOfCamera>true</IndependentOfCamera>
         </NamedObjectSave>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>string</Type>
+            <Member>DisplayText</Member>
+            <ValueAsString>The End.\nPress Enter To Go To Main Menu!</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>X</Member>
+            <ValueAsFloat>0</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Y</Member>
+            <ValueAsFloat>0</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>float</Type>
+            <Member>Z</Member>
+            <ValueAsFloat>25</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>HorizontalAlignment</Type>
+            <Member>HorizontalAlignment</Member>
+            <ValueAsInt>2</ValueAsInt>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>false</ValueAsBool>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Text</SourceClassType>
+          <InstanceName>TheEndText</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <AttachToCamera>true</AttachToCamera>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
       </NamedObjects>
     </ScreenSave>
     <ScreenSave>
@@ -140,6 +204,100 @@
       </Tags>
       <Source>GLUE</Source>
       <Name>Screens\MenuScreen</Name>
+      <NamedObjects>
+        <NamedObjectSave>
+          <CustomProperty>
+            <Type>string</Type>
+            <Member>DisplayText</Member>
+            <ValueAsString>THE LOST FEDORA\n\nPress ENTER to start the game\nPress ESC to exit</ValueAsString>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>true</ValueAsBool>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>VerticalAlignment</Type>
+            <Member>VerticalAlignment</Member>
+            <ValueAsInt>2</ValueAsInt>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>HorizontalAlignment</Type>
+            <Member>HorizontalAlignment</Member>
+            <ValueAsInt>2</ValueAsInt>
+          </CustomProperty>
+          <SourceType>FlatRedBallType</SourceType>
+          <SourceFile />
+          <SourceName />
+          <SourceClassType>Text</SourceClassType>
+          <InstanceName>TextInstance</InstanceName>
+          <AttachToContainer>true</AttachToContainer>
+          <AttachToCamera>true</AttachToCamera>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+      </NamedObjects>
+    </ScreenSave>
+    <ScreenSave>
+      <Tags>
+        <string>GLUE</string>
+      </Tags>
+      <Source>GLUE</Source>
+      <States>
+        <StateSave>
+          <InstructionSaves>
+            <InstructionSave>
+              <Type>Single</Type>
+              <Member>SpriteObjectAlpha</Member>
+              <ValueAsFloat>1</ValueAsFloat>
+            </InstructionSave>
+          </InstructionSaves>
+          <Name>Opaque</Name>
+        </StateSave>
+        <StateSave>
+          <InstructionSaves>
+            <InstructionSave>
+              <Type>Single</Type>
+              <Member>SpriteObjectAlpha</Member>
+              <ValueAsFloat>0</ValueAsFloat>
+            </InstructionSave>
+          </InstructionSaves>
+          <Name>Transparent</Name>
+        </StateSave>
+      </States>
+      <NextScreen>Screens\MenuScreen</NextScreen>
+      <CustomVariables>
+        <CustomVariable>
+          <Properties>
+            <PropertySave>
+              <Name>Type</Name>
+              <ValueAsString>float</ValueAsString>
+            </PropertySave>
+          </Properties>
+          <Name>SpriteObjectAlpha</Name>
+          <Type>float</Type>
+          <DefaultValue xsi:type="xsd:float">0</DefaultValue>
+          <SourceObject>SpriteObject</SourceObject>
+          <SourceObjectProperty>Alpha</SourceObjectProperty>
+        </CustomVariable>
+      </CustomVariables>
+      <Name>Screens\SplashScreen</Name>
+      <ReferencedFiles>
+        <ReferencedFileSave>
+          <Name>Screens/SplashScreen/SceneFile.scnx</Name>
+          <IsSharedStatic>false</IsSharedStatic>
+        </ReferencedFileSave>
+      </ReferencedFiles>
+      <NamedObjects>
+        <NamedObjectSave>
+          <SourceType>File</SourceType>
+          <SourceFile>Screens/SplashScreen/SceneFile.scnx</SourceFile>
+          <SourceName>frblogo5121 (Sprite)</SourceName>
+          <InstanceName>SpriteObject</InstanceName>
+          <AttachToContainer>false</AttachToContainer>
+          <AddToManagers>false</AddToManagers>
+          <IndependentOfCamera>true</IndependentOfCamera>
+        </NamedObjectSave>
+      </NamedObjects>
     </ScreenSave>
   </Screens>
   <Entities>
@@ -196,7 +354,7 @@
           <CustomProperty>
             <Type>bool</Type>
             <Member>Visible</Member>
-            <ValueAsBool>true</ValueAsBool>
+            <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
           <CustomProperty>
             <Type>float</Type>
@@ -466,7 +624,7 @@
           <CustomProperty>
             <Type>bool</Type>
             <Member>Visible</Member>
-            <ValueAsBool>true</ValueAsBool>
+            <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
@@ -515,6 +673,11 @@
             <Type>float</Type>
             <Member>Height</Member>
             <ValueAsFloat>5</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
@@ -584,6 +747,11 @@
             <Type>float</Type>
             <Member>Height</Member>
             <ValueAsFloat>32</ValueAsFloat>
+          </CustomProperty>
+          <CustomProperty>
+            <Type>bool</Type>
+            <Member>Visible</Member>
+            <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
           <SourceType>FlatRedBallType</SourceType>
           <SourceFile />
@@ -689,7 +857,7 @@
           <CustomProperty>
             <Type>bool</Type>
             <Member>Visible</Member>
-            <ValueAsBool>true</ValueAsBool>
+            <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
           <CustomProperty>
             <Type>float</Type>
@@ -1177,7 +1345,7 @@
           <CustomProperty>
             <Type>bool</Type>
             <Member>Visible</Member>
-            <ValueAsBool>true</ValueAsBool>
+            <ValueAsBool>false</ValueAsBool>
           </CustomProperty>
           <CustomProperty>
             <Type>float</Type>
@@ -1231,7 +1399,7 @@
     <RecordLockContention>false</RecordLockContention>
   </GlobalContentSettingsSave>
   <SyncedProjects />
-  <StartUpScreen>Screens\GameScreen</StartUpScreen>
+  <StartUpScreen>Screens\SplashScreen</StartUpScreen>
   <ResolutionPresets />
   <PerformanceSettingsSave>
     <ThrowExceptionOnPostInitializeContentLoad>false</ThrowExceptionOnPostInitializeContentLoad>

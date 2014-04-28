@@ -39,6 +39,15 @@ namespace LudumDare29.Screens
 		void CustomActivity(bool firstTimeCalled)
 		{
 
+            if(InputManager.Keyboard.KeyReleased(Keys.Enter))
+            {
+                MoveToScreen(typeof(GameScreen));
+            }
+            else if(InputManager.Keyboard.KeyReleased(Keys.Escape))
+            {
+                FlatRedBallServices.Game.Exit();
+            }
+
 
 		}
 

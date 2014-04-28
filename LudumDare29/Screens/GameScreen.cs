@@ -35,11 +35,12 @@ namespace LudumDare29.Screens
 
         bool switchingLevels = false;
 
+        bool TheEnd = false;
 
 		void CustomInitialize()
 		{
             TileCollisionShapes.Visible = true;
-            GlobalData.PlayerData.currentLevel = "Level2";
+            GlobalData.PlayerData.currentLevel = "StartLevel";
             GlobalData.PlayerData.gunDamage = 1;
             GlobalData.PlayerData.health = 100;
             GlobalData.PlayerData.playerDefense = 0;
@@ -60,6 +61,19 @@ namespace LudumDare29.Screens
             PlayerInstance.DetermineMovementValues();
 
             GlobalData.PlayerData.playerPos = new Vector2(PlayerInstance.Position.X, PlayerInstance.Position.Y);
+
+            FlatRedBall.Debugging.Debugger.Write("Player Health: " + GlobalData.PlayerData.health);
+
+            HealthActivity();
+
+            if(TheEnd)
+            {
+                TheEndText.Visible = true;
+                if(InputManager.Keyboard.KeyDown(Keys.Enter))
+                {
+                    MoveToScreen(typeof(MenuScreen));
+                }
+            }
 		}
 
 		void CustomDestroy()
@@ -74,14 +88,37 @@ namespace LudumDare29.Screens
 
         }
 
+        private void HealthActivity()
+        {
+            if(GlobalData.PlayerData.health <= 0)
+            {
+                GlobalData.PlayerData.health = 0;
+                PlayerInstance.Destroy();
+                TheEnd = true;
+            }
+        }
+
         private void SetLevelByName(string name)
         {
+            if(name == "StartLevel")
+            {
+                FlatRedBallServices.GraphicsOptions.BackgroundColor = Color.CornflowerBlue;
+            }
+            else if(name == "EndLevel")
+            {
+                FlatRedBallServices.GraphicsOptions.BackgroundColor = Color.Gray;
+            }
+            else
+            {
+                FlatRedBallServices.GraphicsOptions.BackgroundColor = Color.Black;
+            }
             switchingLevels = true;
             TiledMap.RemoveFromManagersOneWay();
             TiledMap.RemoveSelfFromListsBelongingTo();
             TiledMap.Destroy();
             RemoveShapes(TileCollisionShapes);
             RemoveShapes(EntityCollisionShapes);
+            RemoveShapes(EnemyCollisionGround);
             ClearList();
             TiledMap = (LayeredTileMap)GetMember(name);
             TiledMap.AddToManagers();
@@ -146,7 +183,7 @@ namespace LudumDare29.Screens
                         layer.GetBottomLeftWorldCoordinateForOrderedTile(index, out left, out bottom);
                         float centerX = left + tileSize;
                         float centerY = bottom + tileSize;
-                        AddShapes(TileCollisionShapes, tileSize, tileSize, new Vector3(centerX, centerY, 0), true, Color.Green);
+                        AddShapes(TileCollisionShapes, tileSize, tileSize, new Vector3(centerX, centerY, 0), false, Color.Green);
                     }
                 }
                 if (layer.NamedTileOrderedIndexes.ContainsKey("StartPos"))
@@ -301,7 +338,7 @@ namespace LudumDare29.Screens
                             float centerX = left + tileSize;
                             float centerY = bottom + tileSize;
 
-                            AddShapes(EnemyCollisionGround, 16, 16, new Vector3(centerX, centerY, 0), true, Color.Red);
+                            AddShapes(EnemyCollisionGround, 16, 16, new Vector3(centerX, centerY, 0), false, Color.Red);
                             layer.Visible = false;
                         }
                     }
@@ -321,7 +358,7 @@ namespace LudumDare29.Screens
         {
             AxisAlignedRectangle rect = new AxisAlignedRectangle(ScaleX, ScaleY);
             rect.Position = position;
-            rect.Visible = Visible;
+            rect.Visible = false;
             rect.Color = color;
             shapeCol.AxisAlignedRectangles.Add(rect);
         }
@@ -351,16 +388,19 @@ namespace LudumDare29.Screens
                             EnemyCornerList[corner].Health -= 10;
                         }
                     }
-                    //Should make this seperate, but its not likely to happen.
-                    //Against ground enemy
-                    for (int ground = GroundEnemyList.Count - 1; ground >= 0; ground--)
+                    try
                     {
-                        if(BulletList[bullet].Collision.CollideAgainst(GroundEnemyList[ground].Collision))
+                        //Against ground enemy
+                        for (int ground = GroundEnemyList.Count - 1; ground >= 0; ground--)
                         {
-                            BulletList[bullet].Destroy();
-                            GroundEnemyList[ground].Health -= 15;
+                            if (BulletList[bullet].Collision.CollideAgainst(GroundEnemyList[ground].Collision))
+                            {
+                                BulletList[bullet].Destroy();
+                                GroundEnemyList[ground].Health -= 15;
+                            }
                         }
                     }
+                    catch { }
                 }
             }
 
@@ -389,6 +429,24 @@ namespace LudumDare29.Screens
                             PlayerInstance.Collision.CollideAgainstMove(ActionEntityList[Action].Collision, 0, 1);
                         }
                     }
+                    else if(ActionEntityList[Action].actionString == "Kill")
+                    {
+                        if(PlayerInstance.Collision.CollideAgainst(ActionEntityList[Action].Collision))
+                        {
+                            GlobalData.PlayerData.health = 0;
+                        }
+                    }
+                    else if (ActionEntityList[Action].actionString == "PutOnFedora")
+                    {
+                        if (PlayerInstance.Collision.CollideAgainst(ActionEntityList[Action].Collision))
+                        {
+                            PlayerInstance.FedoraSprite.Visible = true;
+                        }
+                    }
+                    else if (ActionEntityList[Action].actionString == "TheEnd")
+                    {
+                        TheEnd = true;
+                    }
                 }
             }
 
@@ -411,7 +469,7 @@ namespace LudumDare29.Screens
                 if(PlayerInstance.Collision.CollideAgainst(EnemyBulletList[ebullet].Collision))
                 {
                     EnemyBulletList[ebullet].Destroy();
-                    GlobalData.PlayerData.health -= 5;
+                    GlobalData.PlayerData.health -= 1;
                 }
                 else
                 {
@@ -437,7 +495,7 @@ namespace LudumDare29.Screens
                 {
                     if (GroundEnemyList[ground].Collision.CollideAgainstBounce(PlayerInstance.Collision, 0, 1, 5))
                     {
-                        GlobalData.PlayerData.health -= 15;
+                        GlobalData.PlayerData.health -= 2;
                     }   
                 }
             }

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Text;
 using FlatRedBall.Math.Geometry;
 using FlatRedBall.Math;
+using FlatRedBall.Graphics;
 using FlatRedBall.TileGraphics;
 
 namespace LudumDare29.Screens
@@ -66,6 +67,48 @@ namespace LudumDare29.Screens
 				return mLevel2;
 			}
 		}
+		static FlatRedBall.TileGraphics.LayeredTileMap mLevel3;
+		static string mLastContentManagerForLevel3;
+		public static FlatRedBall.TileGraphics.LayeredTileMap Level3
+		{
+			get
+			{
+				if (mLevel3 == null || mLastContentManagerForLevel3 != "GameScreen")
+				{
+					mLastContentManagerForLevel3 = "GameScreen";
+					mLevel3 = LayeredTileMap.FromScene("content/screens/gamescreen/level3.scnx", "GameScreen");
+				}
+				return mLevel3;
+			}
+		}
+		static FlatRedBall.TileGraphics.LayeredTileMap mLevel4;
+		static string mLastContentManagerForLevel4;
+		public static FlatRedBall.TileGraphics.LayeredTileMap Level4
+		{
+			get
+			{
+				if (mLevel4 == null || mLastContentManagerForLevel4 != "GameScreen")
+				{
+					mLastContentManagerForLevel4 = "GameScreen";
+					mLevel4 = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/level4.tilb", "GameScreen");
+				}
+				return mLevel4;
+			}
+		}
+		static FlatRedBall.TileGraphics.LayeredTileMap mEndLevel;
+		static string mLastContentManagerForEndLevel;
+		public static FlatRedBall.TileGraphics.LayeredTileMap EndLevel
+		{
+			get
+			{
+				if (mEndLevel == null || mLastContentManagerForEndLevel != "GameScreen")
+				{
+					mLastContentManagerForEndLevel = "GameScreen";
+					mEndLevel = LayeredTileMap.FromReducedTileMapInfo("content/screens/gamescreen/endlevel.tilb", "GameScreen");
+				}
+				return mEndLevel;
+			}
+		}
 		
 		private FlatRedBall.TileGraphics.LayeredTileMap TiledMap;
 		private FlatRedBall.Math.Geometry.ShapeCollection TileCollisionShapes;
@@ -79,6 +122,7 @@ namespace LudumDare29.Screens
 		private PositionedObjectList<LudumDare29.Entities.GroundEnemy> GroundEnemyList;
 		private FlatRedBall.Math.Geometry.ShapeCollection EntityCollisionShapes;
 		private FlatRedBall.Math.Geometry.ShapeCollection EnemyCollisionGround;
+		private FlatRedBall.Graphics.Text TheEndText;
 
 		public GameScreen()
 			: base("GameScreen")
@@ -113,6 +157,8 @@ namespace LudumDare29.Screens
 			EntityCollisionShapes.Name = "EntityCollisionShapes";
 			EnemyCollisionGround = new FlatRedBall.Math.Geometry.ShapeCollection();
 			EnemyCollisionGround.Name = "EnemyCollisionGround";
+			TheEndText = new FlatRedBall.Graphics.Text();
+			TheEndText.Name = "TheEndText";
 			
 			
 			PostInitialize();
@@ -134,6 +180,11 @@ namespace LudumDare29.Screens
 			PlayerInstance.AddToManagers(mLayer);
 			EntityCollisionShapes.AddToManagers();
 			EnemyCollisionGround.AddToManagers();
+			TextManager.AddText(TheEndText); if(TheEndText.Font != null) TheEndText.SetPixelPerfectScale(SpriteManager.Camera);
+			if (TheEndText.Font != null)
+			{
+				TheEndText.SetPixelPerfectScale(mLayer);
+			}
 			base.AddToManagers();
 			AddToManagersBottomUp();
 			CustomInitialize();
@@ -234,6 +285,21 @@ namespace LudumDare29.Screens
 				mLevel2.Destroy();
 				mLevel2 = null;
 			}
+			if (mLevel3 != null)
+			{
+				mLevel3.Destroy();
+				mLevel3 = null;
+			}
+			if (mLevel4 != null)
+			{
+				mLevel4.Destroy();
+				mLevel4 = null;
+			}
+			if (mEndLevel != null)
+			{
+				mEndLevel.Destroy();
+				mEndLevel = null;
+			}
 			
 			BulletList.MakeOneWay();
 			NextLevelEntityList.MakeOneWay();
@@ -291,6 +357,10 @@ namespace LudumDare29.Screens
 			{
 				EnemyCollisionGround.RemoveFromManagers(ContentManagerName != "Global");
 			}
+			if (TheEndText != null)
+			{
+				TextManager.RemoveText(TheEndText);
+			}
 			BulletList.MakeTwoWay();
 			NextLevelEntityList.MakeTwoWay();
 			SignEntityList.MakeTwoWay();
@@ -310,6 +380,39 @@ namespace LudumDare29.Screens
 		{
 			bool oldShapeManagerSuppressAdd = FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = true;
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.CopyAbsoluteToRelative();
+				TheEndText.RelativeZ += -40;
+				TheEndText.AttachTo(SpriteManager.Camera, false);
+			}
+			TheEndText.DisplayText = "The End.\nPress Enter To Go To Main Menu!";
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.X = 0f;
+			}
+			else
+			{
+				TheEndText.RelativeX = 0f;
+			}
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.Y = 0f;
+			}
+			else
+			{
+				TheEndText.RelativeY = 0f;
+			}
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.Z = 25f;
+			}
+			else
+			{
+				TheEndText.RelativeZ = 25f - 40.0f;
+			}
+			TheEndText.HorizontalAlignment = FlatRedBall.Graphics.HorizontalAlignment.Center;
+			TheEndText.Visible = false;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp ()
@@ -364,6 +467,10 @@ namespace LudumDare29.Screens
 			{
 				EnemyCollisionGround.RemoveFromManagers(false);
 			}
+			if (TheEndText != null)
+			{
+				TextManager.RemoveTextOneWay(TheEndText);
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
@@ -371,6 +478,33 @@ namespace LudumDare29.Screens
 			{
 				PlayerInstance.AssignCustomVariables(true);
 			}
+			TheEndText.DisplayText = "The End.\nPress Enter To Go To Main Menu!";
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.X = 0f;
+			}
+			else
+			{
+				TheEndText.RelativeX = 0f;
+			}
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.Y = 0f;
+			}
+			else
+			{
+				TheEndText.RelativeY = 0f;
+			}
+			if (TheEndText.Parent == null)
+			{
+				TheEndText.Z = 25f;
+			}
+			else
+			{
+				TheEndText.RelativeZ = 25f - 40.0f;
+			}
+			TheEndText.HorizontalAlignment = FlatRedBall.Graphics.HorizontalAlignment.Center;
+			TheEndText.Visible = false;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
@@ -403,6 +537,7 @@ namespace LudumDare29.Screens
 			{
 				GroundEnemyList[i].ConvertToManuallyUpdated();
 			}
+			TextManager.ConvertToManuallyUpdated(TheEndText);
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{
@@ -432,6 +567,12 @@ namespace LudumDare29.Screens
 					return StartLevel;
 				case  "Level2":
 					return Level2;
+				case  "Level3":
+					return Level3;
+				case  "Level4":
+					return Level4;
+				case  "EndLevel":
+					return EndLevel;
 			}
 			return null;
 		}
@@ -443,6 +584,12 @@ namespace LudumDare29.Screens
 					return StartLevel;
 				case  "Level2":
 					return Level2;
+				case  "Level3":
+					return Level3;
+				case  "Level4":
+					return Level4;
+				case  "EndLevel":
+					return EndLevel;
 			}
 			return null;
 		}
@@ -454,6 +601,12 @@ namespace LudumDare29.Screens
 					return StartLevel;
 				case  "Level2":
 					return Level2;
+				case  "Level3":
+					return Level3;
+				case  "Level4":
+					return Level4;
+				case  "EndLevel":
+					return EndLevel;
 			}
 			return null;
 		}

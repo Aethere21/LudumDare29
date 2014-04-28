@@ -26,6 +26,7 @@ using FlatRedBall.Screens;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FlatRedBall.Graphics;
 
 namespace LudumDare29.Screens
 {
@@ -36,6 +37,7 @@ namespace LudumDare29.Screens
 		static bool HasBeenLoadedWithGlobalContentManager = false;
 		#endif
 		
+		private FlatRedBall.Graphics.Text TextInstance;
 
 		public MenuScreen()
 			: base("MenuScreen")
@@ -46,6 +48,8 @@ namespace LudumDare29.Screens
         {
 			// Generated Initialize
 			LoadStaticContent(ContentManagerName);
+			TextInstance = new FlatRedBall.Graphics.Text();
+			TextInstance.Name = "TextInstance";
 			
 			
 			PostInitialize();
@@ -60,6 +64,11 @@ namespace LudumDare29.Screens
 // Generated AddToManagers
 		public override void AddToManagers ()
 		{
+			TextManager.AddText(TextInstance); if(TextInstance.Font != null) TextInstance.SetPixelPerfectScale(SpriteManager.Camera);
+			if (TextInstance.Font != null)
+			{
+				TextInstance.SetPixelPerfectScale(mLayer);
+			}
 			base.AddToManagers();
 			AddToManagersBottomUp();
 			CustomInitialize();
@@ -92,6 +101,10 @@ namespace LudumDare29.Screens
 		{
 			// Generated Destroy
 			
+			if (TextInstance != null)
+			{
+				TextManager.RemoveText(TextInstance);
+			}
 
 			base.Destroy();
 
@@ -104,6 +117,16 @@ namespace LudumDare29.Screens
 		{
 			bool oldShapeManagerSuppressAdd = FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = true;
+			if (TextInstance.Parent == null)
+			{
+				TextInstance.CopyAbsoluteToRelative();
+				TextInstance.RelativeZ += -40;
+				TextInstance.AttachTo(SpriteManager.Camera, false);
+			}
+			TextInstance.DisplayText = "THE LOST FEDORA\n\nPress ENTER to start the game\nPress ESC to exit";
+			TextInstance.Visible = true;
+			TextInstance.VerticalAlignment = FlatRedBall.Graphics.VerticalAlignment.Center;
+			TextInstance.HorizontalAlignment = FlatRedBall.Graphics.HorizontalAlignment.Center;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
 		public virtual void AddToManagersBottomUp ()
@@ -113,15 +136,24 @@ namespace LudumDare29.Screens
 		}
 		public virtual void RemoveFromManagers ()
 		{
+			if (TextInstance != null)
+			{
+				TextManager.RemoveTextOneWay(TextInstance);
+			}
 		}
 		public virtual void AssignCustomVariables (bool callOnContainedElements)
 		{
 			if (callOnContainedElements)
 			{
 			}
+			TextInstance.DisplayText = "THE LOST FEDORA\n\nPress ENTER to start the game\nPress ESC to exit";
+			TextInstance.Visible = true;
+			TextInstance.VerticalAlignment = FlatRedBall.Graphics.VerticalAlignment.Center;
+			TextInstance.HorizontalAlignment = FlatRedBall.Graphics.HorizontalAlignment.Center;
 		}
 		public virtual void ConvertToManuallyUpdated ()
 		{
+			TextManager.ConvertToManuallyUpdated(TextInstance);
 		}
 		public static void LoadStaticContent (string contentManagerName)
 		{

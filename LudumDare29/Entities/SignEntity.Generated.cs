@@ -221,7 +221,7 @@ namespace LudumDare29.Entities
 			}
 			Collision.Color = Color.Red;
 			Collision.Height = 200f;
-			Collision.Visible = true;
+			Collision.Visible = false;
 			Collision.Width = 32f;
 			FlatRedBall.Math.Geometry.ShapeManager.SuppressAddingOnVisibilityTrue = oldShapeManagerSuppressAdd;
 		}
@@ -278,7 +278,7 @@ namespace LudumDare29.Entities
 			SpriteInstance.Visible = true;
 			mCollision.Color = Color.Red;
 			mCollision.Height = 200f;
-			mCollision.Visible = true;
+			mCollision.Visible = false;
 			mCollision.Width = 32f;
 		}
 		public virtual void ConvertToManuallyUpdated ()

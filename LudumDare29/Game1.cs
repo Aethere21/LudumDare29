@@ -47,11 +47,11 @@ namespace LudumDare29
 
             FlatRedBallServices.GraphicsOptions.BackgroundColor = Color.Black;
 
-            //FlatRedBallServices.GraphicsOptions.TextureFilter = TextureFilter.Point;
-            FlatRedBallServices.GraphicsOptions.UseMultiSampling = true;
+            FlatRedBallServices.GraphicsOptions.TextureFilter = TextureFilter.Point;
+            //FlatRedBallServices.GraphicsOptions.UseMultiSampling = true;
             FlatRedBallServices.GraphicsOptions.TextureLoadingColorKey = Color.Black;
 
-			FlatRedBall.Screens.ScreenManager.Start(typeof(LudumDare29.Screens.GameScreen));
+			FlatRedBall.Screens.ScreenManager.Start(typeof(LudumDare29.Screens.SplashScreen));
 
             base.Initialize(); 
         }

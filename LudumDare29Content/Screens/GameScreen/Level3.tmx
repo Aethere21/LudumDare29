@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="80" height="50" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="MainTileset" tilewidth="32" tileheight="32">
   <image source="../../../../../../../Desktop/Ludum Dare/MainTileset.png" trans="ffffff" width="1024" height="1024"/>
   <tile id="1">
    <properties>
     <property name="Name" value="Collision"/>
+   </properties>
+  </tile>
+  <tile id="70">
+   <properties>
+    <property name="Name" value="Action_Kill"/>
    </properties>
   </tile>
   <tile id="99">
@@ -14,27 +19,22 @@
   </tile>
   <tile id="100">
    <properties>
-    <property name="Name" value="EnemyCorner_Right"/>
+    <property name="Name" value="EnemyCorner_Left"/>
    </properties>
   </tile>
   <tile id="101">
    <properties>
-    <property name="Name" value="EnemyGround"/>
+    <property name="Name" value="EnemyCorner_Right"/>
    </properties>
   </tile>
   <tile id="102">
    <properties>
-    <property name="Name" value="EnemyCorner_Left"/>
+    <property name="Name" value="EnemyGround"/>
    </properties>
   </tile>
   <tile id="128">
    <properties>
-    <property name="Name" value="NextLevel_Level3"/>
-   </properties>
-  </tile>
-  <tile id="132">
-   <properties>
-    <property name="Name" value="Sign_You have to go find your fedora! Let noon stop you!"/>
+    <property name="Name" value="NextLevel_Level4"/>
    </properties>
   </tile>
   <tile id="162">
@@ -48,14 +48,14 @@
    </properties>
   </tile>
  </tileset>
- <layer name="Main" width="80" height="50" opacity="0.9">
+ <layer name="Main" width="50" height="50">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2YwQoCMRQDy4L//8uevAiubmOTVGcg59cMZXnbY4xx/FicuOepvDsv/jTwp4E/Dfxp4E8j4a85M32cPM55K8wu/tKezvxd9YE/7h/+OvLs4hM3+Nvv/rU6nHkrYP/bb/9zo8zk/WrtzH/wt5Imf9/+Nl050+ysJn87gj8N/Gmw//l3RoX0P8aKOEl3xV9fnKS74q8vTtJd8dcXJ+mu+OuLk3RX/PXFSbor/vriJN0Vf31xku6Kv744SXfFX18AAAAA4DV36FhcwIA+AAA=
+   H4sIAAAAAAAAC+2ZUQ6EIAxEGxIP7mG858YPoyF2obbAFPoS/ozMozWCJiLaJhiJ/JMoPJCw8DgsgiiJetzsFkGUSD0SM0ZTmwMlL0dNPuT8FyUPDw4nnAd6H+U883rKneNt3TnCA4vcQ+s06v3Ya77Wc4zqK+u6IT4fX/Jw+75/AxHkbBcz7GPf8NYrEsKjLzVnJCuPkevhpR4lNB499hqSa1evR+m+0gza3li5HmjureuRn9Fa9jHa2n5hle+JXpjpHCX9L4pIeGARHliEBxbhgUV4YDGTxw+EDbugECcAAA==
   </data>
  </layer>
- <layer name="Invisible" width="80" height="50">
+ <layer name="Invisible" width="50" height="50">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3YUQqDMAwAUA/r9Bx+7CRz9xQ//Buso9Us9j3oT0MhDbSQDAO15ugECj0q4/ynd3QC/GQq3MtiiU6Aj17B57NbGywAAOjZMWPKMjMrNX6JZ+7vo/Tef9bSm3K2440+Q7PI6+o/7m5/6n6fFnO6nmd66ldH/QAAAAAAAADo3QY/L9g1gD4AAA==
+   H4sIAAAAAAAAC+3SsQ2AMAxFwWyXRYgYDAalJiJFQGAj3UnuXPzilQIAAABna/SACdtLv1/bJy+TvpcWsuKeqyYydzLyh04AINoSPQAAAHisJjzyOQC7/tn2ECcAAA==
   </data>
  </layer>
 </map>

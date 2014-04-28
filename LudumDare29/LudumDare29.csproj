@@ -176,6 +176,10 @@
     <Compile Include="Screens\MenuScreen.Generated.cs">
       <DependentUpon>MenuScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\SplashScreen.cs" />
+    <Compile Include="Screens\SplashScreen.Generated.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Setup\CameraSetup.cs" />
     <Compile Include="TextDrawableBatch.cs" />
     <Compile Include="TileCollisions\TileShapeCollection.cs" />

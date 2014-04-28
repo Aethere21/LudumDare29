@@ -94,9 +94,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>enemyTextures</Name>
     </None>
+    <None Include="Screens\GameScreen\EndLevel.tilb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>EndLevel</Name>
+    </None>
     <None Include="Screens\GameScreen\Level2.tilb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>Level2</Name>
+    </None>
+    <None Include="Screens\GameScreen\Level3.scnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>Level3</Name>
+    </None>
+    <None Include="Screens\GameScreen\Level4.tilb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>Level4</Name>
     </None>
     <None Include="Screens\GameScreen\MainTiles.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -113,6 +125,14 @@
     <None Include="Screens\GameScreen\StartLevel.tilb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Name>StartLevel</Name>
+    </None>
+    <None Include="Screens\SplashScreen\frblogo512.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>frblogo512</Name>
+    </None>
+    <None Include="Screens\SplashScreen\SceneFile.scnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>SceneFile</Name>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
